@@ -1,0 +1,214 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.stack--no-item-margins > * {
+  margin: 0;
+}
+
+.stack > * + * {
+  --stack-space: var(--rem0, 1rem);
+  margin-block-start: var(--stack-space, 0);
+  /* max-width: 100%; */
+}
+
+.stack--row {
+  flex-direction: row;
+}
+
+.stack--row > * {
+  margin-block: 0;
+}
+
+.stack--row > * + * {
+  margin-inline-start: var(--stack-space, 0);
+}
+
+.stack:only-child {
+  /* ↓ `height` in horizontal-tb writing mode */
+  block-size: 100%;
+}
+
+/* .stack:only-child {
+  block-size: 100%;
+} */
+
+.stack0 > * + * {
+  --stack-space: 0;
+}
+
+.stack9 > * + * {
+  --stack-space: var(--rem9, 1rem);
+}
+
+.stack8 > * + * {
+  --stack-space: var(--rem8, 1rem);
+}
+
+.stack7 > * + * {
+  --stack-space: var(--rem7, 1rem);
+}
+
+.stack6 > * + * {
+  --stack-space: var(--rem6, 1rem);
+}
+
+.stack5 > * + * {
+  --stack-space: var(--rem5, 1rem);
+}
+
+.stack4 > * + * {
+  --stack-space: var(--rem4, 1rem);
+}
+
+.stack3 > * + * {
+  --stack-space: var(--rem3, 1rem);
+}
+
+.stack2 > * + * {
+  --stack-space:var(--rem2, 1rem);
+}
+
+.stack1 > * + * {
+  --stack-space: var(--rem1, 1rem);
+}
+
+.stack-1 > * + * {
+  --stack-space: var(--rem-1, 1rem);
+}
+
+.stack-2 > * + * {
+  --stack-space: var(--rem-2, 1rem);
+}
+
+.stack-3 > * + * {
+  --stack-space: var(--rem-3, 1rem);
+}
+
+.stack-4 > * + * {
+  --stack-space: var(--rem-4, 1rem);
+}
+
+.stack-5 > * + * {
+  --stack-space: var(--rem-5, 1rem);
+}
+
+.stack-6 > * + * {
+  --stack-space: var(--rem-6, 1rem);
+}
+
+.stack-7 > * + * {
+  --stack-space: var(--rem-7, 1rem);
+}
+
+.stack-8 > * + * {
+  --stack-space: var(--rem-8, 1rem);
+}
+
+.stack-9 > * + * {
+  --stack-space: var(--rem-9, 1rem);
+}
+
+.stack-exception,
+.stack-exception + * {
+  --stack-space: 3rem;
+}
+
+.stack--align-baseline {
+  align-items: baseline;
+}
+
+.stack--auto-width {
+  align-items: flex-start;
+}
+
+.stack--align-start {
+  align-items: flex-start;
+}
+
+.stack--align-center {
+  align-items: center;
+}
+
+.stack--align-end {
+  align-items: end;
+}
+
+.stack--justify-center {
+  justify-content: center;
+}
+
+.stack--justify-end {
+  justify-content: end;
+}
+
+.stack--justify-space-between {
+  justify-content: space-between;
+}
+
+.stack--wrap {
+  flex-wrap: wrap;
+}
+
+.stack--wrap3 {
+  margin-inline-start: calc(-1 * var(--rem3, 0));
+  /* margin-block-start: calc(-1/2 * var(--rem3, 0)); */
+}
+
+.stack--wrap3 > * {
+  margin-inline-start: var(--rem3, 0);
+  margin-block: calc(1/2 * var(--rem3, 0));
+}
+
+.stack--wrap4 {
+  margin-inline-start: calc(-1 * var(--rem4, 0));
+  /* margin-block-start: calc(-1/2 * var(--rem4, 0)); */
+}
+
+.stack--wrap4 > * {
+  margin-inline-start: var(--rem4, 0);
+  margin-block: calc(1/2 * var(--rem4, 0));
+}
+
+.cstack--inline-space-before {
+  margin-inline-start: auto;
+}
+
+.cstack--inline-space-after {
+  margin-inline-end: auto;
+}
+
+.cstack--layout-sidebar {
+  flex-grow: 1;
+  flex-basis: 20rem;
+}
+
+.cstack--layout-content {
+  flex-grow: 999;
+  min-width: 50%;
+  width: 0; /* why is this needed? the idea comes from https://heydonworks.com/artifacts/ "Making Future Interfaces: Algorithmic Layouts" which is described without the need for a width */
+}
+
+@media (max-width: 1100px) {
+  .stack--column-media-1100 {
+    flex-direction: column;
+  }
+
+  .stack--column-media-1100 > * + * {
+    margin-inline: 0;
+    margin-block-start: var(--stack-space, 0);
+  }
+}
+
+@media (max-width: 800px) {
+  .stack--column-media-800 {
+    flex-direction: column;
+  }
+
+  .stack--column-media-800 > * + * {
+    margin-inline: 0;
+    margin-block-start: var(--stack-space, 0);
+  }
+}
