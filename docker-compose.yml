@@ -24,7 +24,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: escaperoom
+      POSTGRES_DB: challenge-accepted
     # volumes:
     #   - db_save:/var/lib/postgresql/data
     ports:
@@ -37,7 +37,7 @@ services:
     ports:
       - "5050:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: escaperoom@gmail.com
+      PGADMIN_DEFAULT_EMAIL: challenge-accepted@gmail.com
       PGADMIN_DEFAULT_PASSWORD: password
       # PGADMIN_CONFIG_SERVER_MODE: "False"
       PGADMIN_CONFIG_SERVER_MODE: 'False'
