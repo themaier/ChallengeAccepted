@@ -9,6 +9,7 @@ Getting started:
    - VSCode
    - WSL2
    - DockerDesktop
+   - create .env in backend-folder !!!!!!!!!!!!!!!
 
 2. In Terminal in Challenge-Accepted root directory
    - docker-compose build
