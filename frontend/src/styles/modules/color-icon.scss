@@ -1,0 +1,51 @@
+.color-icon::before,
+.color-icon--after::after {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  vertical-align: baseline;
+  transform: translateY(0.2em);
+}
+
+.color-icon::before {
+  margin-inline-end: 0.3em;
+}
+
+.color-icon--after::after {
+  margin-inline-start: 0.3em;
+}
+
+.color-icon--after::before {
+  content: none;
+}
+
+.color-icon:empty::before,
+.color-icon--after:empty::after {
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+}
+
+.color-icon--size-1-5::before {
+  width: 1.5em;
+  height: 1.5em;
+  transform: translateY(.4em);
+}
+
+.color-icon--size-2::before {
+  width: 2em;
+  height: 2em;
+  transform: translateY(.6em);
+}
+
+/*
+  Icons SVGs
+*/
+
+/* .color-icon--social-media::before,
+.color-icon--social-media::after {
+  background-image: url('../icons/social-media.svg');
+} */

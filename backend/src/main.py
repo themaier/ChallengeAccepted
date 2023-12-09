@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from src.db.session import init_db
 from fastapi.staticfiles import StaticFiles
+import os
 
 
 def app() -> FastAPI:
@@ -23,6 +24,8 @@ def app() -> FastAPI:
     # app.add_event_handler("shutdown", tasks.create_stop_app_handler(app))
 
     # app.mount("/resources", StaticFiles(directory="/backend/resources"), name="resources")
+    if not os.path.exists("../backend/resources"):
+        os.makedirs("../backend/resources")
     app.mount(
         "/resources", StaticFiles(directory="../backend/resources"), name="resources"
     )
