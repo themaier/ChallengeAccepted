@@ -26,7 +26,6 @@ __pycache__/
 *.py[cod]
 
 /frontend/node_modules/
-/frontend_old/Escape-Room/node_modules/
 /db_save
-/backend/resources
+/backend/resources/**
 /backend/.env
