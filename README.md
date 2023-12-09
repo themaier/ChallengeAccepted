@@ -1,13 +1,16 @@
-# Escape-Room
+# Challenge-Accepted
 
-## Start Escape-Room:
+## Start Challenge-Accepted:
+
 Getting started:
-1. Install: 
+
+1. Install:
+
    - VSCode
    - WSL2
    - DockerDesktop
 
-2. In Terminal in Escape Room root directory
+2. In Terminal in Challenge-Accepted root directory
    - docker-compose build
    - docker-compose up
 
@@ -19,7 +22,7 @@ http://localhost:3000/
 
 Database Connection if needed:
 http://localhost:5050/
-email: escaperoom@gmail.com
+email: challenge-accepted@gmail.com
 pw: password
 
 Strg + C/docker-compose down to stop
@@ -27,10 +30,11 @@ Strg + C/docker-compose down to stop
 For more help with the docker commands, have a look at our HELP.md
 
 ## Deployed Release
-There is also a deployed version of the Escape-Room. 
+
+There is also a deployed version of the Challenge-Accepted.
 You can find it under: http://3.78.244.229:3000/#/login
 
-## Start escape-room without docker-compose (optional):
+## Start Challenge-Accepted without docker-compose (optional):
 
 cd backend
 uvicorn src.main:app
@@ -44,5 +48,5 @@ npm run dev
 ### install dev software backend:
 
 Install postgreSQL on your computer
-Open pgadmin -> create db with name escaperoom
+Open pgadmin -> create db with name challenge-accepted
 Put your password and username into backend/src/db/local.env !

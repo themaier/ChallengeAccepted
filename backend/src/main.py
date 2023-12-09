@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 def app() -> FastAPI:
     init_db()
     app = FastAPI(
-        title="Escape-Room",
+        title="Challenge-Accepted",
         version="1.0.0",
         swagger_ui_parameters={"tryItOutEnabled": True},
     )
@@ -19,7 +19,7 @@ def app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    # app.add_event_handler("startup", tasks.create_start_app_handler(app))
+    # app.add_1vent_handler("startup", tasks.create_start_app_handler(app))
     # app.add_event_handler("shutdown", tasks.create_stop_app_handler(app))
 
     # app.mount("/resources", StaticFiles(directory="/backend/resources"), name="resources")
