@@ -1,18 +1,2 @@
 @import 'modules/variables.scss';
-
-/* first for specifity */
-@import 'modules/reset.scss';
-@import 'modules/layout.scss';
-@import 'modules/icons.scss';
-@import 'modules/color-icon.scss';
-@import 'modules/misc.scss';
-
-/* order shouldn't matter with the following modules */
-@import 'modules/breadcrumb.scss';
-@import 'modules/spacer.scss';
-@import 'modules/form.scss';
-
-/* last for specifity */
-@import 'modules/hacks.scss';
-@import 'modules/stack.scss';
 @import 'modules/utils.scss';
