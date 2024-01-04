@@ -1,7 +1,7 @@
 <template>
     <div class="container-md">
         <h1 class="my-4">Trends</h1>
-        <input class="form-control form-control-lg mb-4" type="text" placeholder="Suchen..." aria-label="Suchen">
+        <input class="form-control form-control-lg mb-4" type="text" placeholder="#" aria-label="Suchen">
         <div class=" p-3 rounded">
             <h2 >#Vodka</h2>
             <div class="d-flex flex-column align-items-center gap-3">

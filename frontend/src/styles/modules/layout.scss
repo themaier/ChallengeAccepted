@@ -14,3 +14,7 @@ main {
     align-items: center;
     justify-content: center;
 }
+
+.router-link-active {
+    color: var(--bs-navbar-active-color)!important;
+}
