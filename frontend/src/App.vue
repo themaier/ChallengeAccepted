@@ -10,10 +10,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item" v-if="store.loggedIn">
-                  <RouterLink class="nav-link active" aria-current="page" to="#">Meine Challenges</RouterLink>
+                  <RouterLink class="nav-link active" aria-current="page" :to="{ name: 'home' }">Meine Challenges</RouterLink>
                 </li>
                 <li class="nav-item" v-if="store.loggedIn">
-                  <RouterLink class="nav-link" to="#">Trending</RouterLink>
+                  <RouterLink class="nav-link" :to="{ name: 'trending' }">Trending</RouterLink>
                 </li>
                 <li class="nav-item" v-if="store.loggedIn">
                   <RouterLink class="nav-link" to="#">Challenge erstellen</RouterLink>

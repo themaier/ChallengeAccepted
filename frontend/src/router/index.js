@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import SignInView from '../views/SignInView.vue'
 import SignUpView from '../views/SignUpView.vue'
 import CreateChallenge from '../views/CreateChallengeView.vue'
+import TrendingView from '../views/TrendingView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/erstellen',
       name: 'create',
       component: CreateChallenge
+    },
+    {
+      path: '/trends',
+      name: 'trending',
+      component: TrendingView
     },
   ]
 })

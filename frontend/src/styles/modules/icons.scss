@@ -1,0 +1,7 @@
+.icon--love::before {
+    mask-image: url('../../../public/icons/heart.svg');
+}
+
+.icon--comment::before {
+    mask-image: url('../../../public/icons/comment.svg');
+}
