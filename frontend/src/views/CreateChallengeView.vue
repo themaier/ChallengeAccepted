@@ -36,7 +36,7 @@
                 <input type="text" class="form-control" id="input4" v-model="formData.input4">
             </div>
             <RouterLink :to="{ name: 'home' }">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Freund herausfordern</button>
             </RouterLink>   
         </form>
     </div>
