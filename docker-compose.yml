@@ -45,18 +45,18 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    volumes:
-      - ./frontend:/frontend
-    command: npm run dev
-    ports:
-      - 3000:3000
-    depends_on:
-      #wait for db initialisation
-      - backend
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./frontend:/frontend
+  #   command: npm run dev
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     #wait for db initialisation
+  #     - backend
 
 volumes:
   db_save:
