@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
     <div class="container-md">
       <h1 class="my-4">Meine Challenges</h1>
     </div>
@@ -41,7 +41,7 @@
         </ul>
       </div>
     </div>
-  </main>
+  </div>
 </template>
 
 <script setup>

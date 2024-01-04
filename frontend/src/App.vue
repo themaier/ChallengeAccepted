@@ -22,13 +22,15 @@
                   <RouterLink class="nav-link" to="#">Profil</RouterLink>
                 </li>
                 <li class="nav-item" v-if="!store.loggedIn">
-                  <button @click="store.loggedIn = true" class="btn btn-primary ms-lg-2 mt-2 mt-lg-0">Registrieren</button>
+                  <RouterLink class="btn btn-primary ms-lg-2 mt-2 mt-lg-0" to="/registrieren">Registrieren</RouterLink>
                 </li>
                 <li class="nav-item" v-if="!store.loggedIn">
                   <RouterLink class="btn btn-outline-primary ms-lg-2 mt-2 mt-lg-0" to="/anmelden">Anmelden</RouterLink>
                 </li>
                 <li class="nav-item" v-if="store.loggedIn">
-                  <button @click="store.loggedIn = false" class="btn btn-danger ms-lg-2 mt-2 mt-lg-0">Abmelden</button>
+                  <RouterLink :to="{ name: 'signIn' }">
+                    <button @click="store.loggedIn = false" class="btn btn-danger ms-lg-2 mt-2 mt-lg-0">Abmelden</button>
+                  </RouterLink>
                 </li>
               </ul>
             </div>
@@ -36,7 +38,9 @@
       </nav>
   </header>
 
-  <RouterView />
+  <main>
+    <RouterView />
+  </main>
 </template>
 
 <script setup>
