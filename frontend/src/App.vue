@@ -16,7 +16,7 @@
                   <RouterLink class="nav-link" to="#">Trending</RouterLink>
                 </li>
                 <li class="nav-item" v-if="store.loggedIn">
-                  <RouterLink class="nav-link" to="#">Challenge erstellen</RouterLink>
+                  <RouterLink class="nav-link" :to="{ name: 'create' }">Challenge erstellen</RouterLink>
                 </li>
                 <li class="nav-item" v-if="store.loggedIn">
                   <RouterLink class="nav-link" to="#">Profil</RouterLink>
