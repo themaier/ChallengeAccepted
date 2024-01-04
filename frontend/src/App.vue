@@ -21,6 +21,9 @@
                 <li class="nav-item" v-if="store.loggedIn">
                   <RouterLink class="nav-link" to="#">Profil</RouterLink>
                 </li>
+                <li class="nav-item" v-if="store.loggedIn">
+                  <RouterLink class="nav-link" :to="{ name: 'friends' }">Freunde</RouterLink>
+                </li>
                 <li class="nav-item" v-if="!store.loggedIn">
                   <RouterLink class="btn btn-primary ms-lg-2 mt-2 mt-lg-0" :to="{ name: 'signUp' }">Registrieren</RouterLink>
                 </li>
