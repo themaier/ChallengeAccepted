@@ -15,9 +15,9 @@
                         {{ selectedOption || 'Freund auswählen' }}
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#" @click="selectOption('Action')">Action</a></li>
-                        <li><a class="dropdown-item" href="#" @click="selectOption('Another action')">Another action</a></li>
-                        <li><a class="dropdown-item" href="#" @click="selectOption('Something else here')">Something else here</a></li>
+                        <li><a class="dropdown-item" href="#" @click="selectOption('Sepp')">Sepp</a></li>
+                        <li><a class="dropdown-item" href="#" @click="selectOption('Max')">Max</a></li>
+                        <li><a class="dropdown-item" href="#" @click="selectOption('Kurt')">Kurt</a></li>
                     </ul>
                 </div>
             </div>
