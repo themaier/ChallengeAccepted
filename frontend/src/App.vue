@@ -19,7 +19,7 @@
                   <RouterLink class="nav-link" :to="{ name: 'create' }">Challenge erstellen</RouterLink>
                 </li>
                 <li class="nav-item" v-if="store.loggedIn">
-                  <RouterLink class="nav-link" to="#">Profil</RouterLink>
+                  <RouterLink class="nav-link" :to="{ name: 'completed' }">Vergangene Challenges</RouterLink>
                 </li>
                 <li class="nav-item" v-if="store.loggedIn">
                   <RouterLink class="nav-link" :to="{ name: 'friends' }">Freunde</RouterLink>

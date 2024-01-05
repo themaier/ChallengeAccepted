@@ -5,6 +5,7 @@ import SignUpView from '../views/SignUpView.vue'
 import CreateChallengeView from '../views/CreateChallengeView.vue'
 import TrendingView from '../views/TrendingView.vue'
 import FriendsView from '../views/FriendsView.vue'
+import CompletedChallengesView from '../views/CompletedChallengesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +40,11 @@ const router = createRouter({
       name: 'trending',
       component: TrendingView
     },
+    {
+      path: '/abgeschlossen',
+      name: 'completed',
+      component: CompletedChallengesView
+    }
   ]
 })
 
