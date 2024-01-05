@@ -1,6 +1,6 @@
 <template>
     <div class="container fullpage d-flex flex-grow-1">
-        <div class="col-4 m-auto">
+        <div class="col-md-5 col m-auto">
             <h1 class="h2 mb-3">Anmelden</h1>
             <form @submit.prevent>
                 <div class="mb-3">
