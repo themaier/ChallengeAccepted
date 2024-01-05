@@ -2,6 +2,10 @@
     mask-image: url('/icons/heart.svg');
 }
 
+.icon--love--filled::before {
+    mask-image: url('/icons/heart--filled.svg');
+}
+
 .icon--comment::before {
     mask-image: url('/icons/comment.svg');
 }

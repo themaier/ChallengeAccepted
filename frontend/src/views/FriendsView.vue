@@ -11,13 +11,13 @@
       <div class="container-md bg-body-tertiary rounded py-2">
         <ul class="px-0 my-0">
           <li class="row align-items-center py-3 gy-2 gy-lg-0">
-            <div class="col-lg-2">Max Wenzinger</div>
+            <RouterLink :to="{ name: 'friendProfile', params: { username: 'Sepp' } }" class="col-lg-2 link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Sepp</RouterLink>
             <div class="col-3 col-lg align-self-end d-flex  justify-content-lg-end d-flex-column">
               <button class="btn btn-success btn-block">Hinzufügen</button>
             </div>
           </li>
           <li class="row align-items-center py-3 gy-2 gy-lg-0">
-            <div class="col-lg-2">Sepp Schneewasser</div>
+            <RouterLink :to="{ name: 'friendProfile', params: { username: 'Kurt' } }" class="col-lg-2 link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Kurt</RouterLink>
             <div class="col-3 col-lg align-self-end d-flex  justify-content-lg-end d-flex-column">
               <button class="btn btn-success">Hinzufügen</button>
             </div>
@@ -30,7 +30,7 @@
       <div class="container-md bg-body-tertiary rounded py-2">
         <ul class="px-0 my-0">
           <li class="row align-items-center py-3 gy-2 gy-lg-0">
-            <RouterLink :to="{ name: 'home' }" class="col-lg-2 link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Tobias Maier</RouterLink>
+            <RouterLink :to="{ name: 'friendProfile', params: { username: 'Tobi' } }" class="col-lg-2 link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Tobias Maier</RouterLink>
             <div class="col-3 col-lg align-self-end d-flex  justify-content-lg-end d-flex-column">
               <button class="btn btn-danger">Entfernen</button>
             </div>

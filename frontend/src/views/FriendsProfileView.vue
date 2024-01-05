@@ -1,18 +1,16 @@
 <template>
     <div class="container-md">
-        <h1 class="my-4">Trends</h1>
-        <input class="form-control form-control-lg mb-4" type="text" placeholder="#" aria-label="Suchen">
-        <div class=" p-3 rounded">
-            <h2 >#Vodka</h2>
+        <h1 class="my-4">Tobi - Abgeschlossene Challenges</h1>
+        <div class="p-3">
             <div class="d-flex flex-column align-items-center gap-3">
                 <div class="d-flex rounded bg-body flex-column w-100 py-2" style="max-width: 470px; max-height: 600px">
                     <div class="px-2 mb-2 d-flex justify-content-between">
-                        <RouterLink :to="{ name: 'friendProfile', params: { username: 'Tobi' } }" class="col-lg-2 link-dark fw-bold link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover">Tobi</RouterLink>
+                        <span class="fw-bold">Tobi</span>
                         <span>19.1.2024 17:00</span>
                     </div>
                     <img class="rounded" style="max-height:600px" src="https://images.pexels.com/photos/16452394/pexels-photo-16452394/free-photo-of-desert.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1">
                     <div class=" px-1 py-2">
-                        <button  @click="like = !like" :class="{ 'icon--love--filled': like }" class="btn icon icon--love icon--size-1-5 icon--button me-2">120</button>
+                        <button @click="like = !like" :class="{ 'icon--love--filled': like }" class="btn icon icon--love icon--size-1-5 icon--button me-2">120</button>
                         <button class="btn icon icon--comment icon--size-1-5 icon--button" data-bs-toggle="modal" data-bs-target="#comment">2</button>
                     </div>
                     <div class="px-2 fw-bold">Challenge 1</div>
@@ -21,13 +19,13 @@
                 </div>
                 <div class="d-flex bg-body flex-column w-100 py-2" style="max-width: 470px">
                     <div class="px-2 mb-2 d-flex justify-content-between">
-                        <RouterLink :to="{ name: 'friendProfile', params: { username: 'Tobi' } }" class="col-lg-2 link-dark fw-bold link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover">Tobi</RouterLink>
+                        <span class="fw-bold">Tobi</span>
                         <span>19.1.2024 17:00</span>
                     </div>
                     <img class="rounded" style="max-height:600px" src="https://i.ibb.co/2ZxBFVp/img2.jpg">
                     <div class=" px-1 py-2">
-                        <button  @click="like = !like" :class="{ 'icon--love--filled': like }" class="btn icon icon--love icon--size-1-5 icon--button me-2">120</button>
-                        <button class="btn icon icon--comment icon--size-1-5 icon--button" data-bs-toggle="modal" data-bs-target="#comment">2</button>
+                        <button  @click="like = !like" :class="{ 'icon--love--filled': like }" class="btn icon icon--love icon--size-1-5 icon--button me-2">110</button>
+                        <button class="btn icon icon--comment icon--size-1-5 icon--button" data-bs-toggle="modal" data-bs-target="#comment">3</button>
                     </div>
                     <div class="px-2 fw-bold">Challenge 1</div>
                     <div class="px-2">Trinke 2 Tequila shots</div>
@@ -66,4 +64,5 @@
 <script setup>
 import { ref } from 'vue'
 const like = ref(false)
+
 </script>
