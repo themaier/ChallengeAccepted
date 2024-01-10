@@ -4,7 +4,6 @@ from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
 
 
-
 class ChallengeStatus(Enum):
     DONE = "done"
     PENDING = "pending"
@@ -21,5 +20,5 @@ class ChallengeTable(SQLModel, table=True):
     description: str
     challenge_resources: str
     prove_resource: str
-    done_date: datetime
+    done_date: Optional[datetime] = Field()
     status: ChallengeStatus

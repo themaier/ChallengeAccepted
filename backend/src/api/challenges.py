@@ -2,7 +2,7 @@ from typing import List
 from fastapi import APIRouter, Depends, Query, HTTPException, Response, status
 from src.utils.error import raise_404
 from src.db_models.challenges import ChallengeTable, ChallengeStatus
-from src.api_models.challenge_accepted import Post
+from src.api_models.challenge_accepted import *
 from src.db.session import get_db
 from sqlmodel import Session, select
 
@@ -11,11 +11,35 @@ router = APIRouter(tags=["Challenges"])
 
 @router.post("/challenges")
 async def add_challenge( 
-        challenge: ChallengeTable,
+        challenge: ChallengeForm,
         db: Session = Depends(get_db)):
-    db.add(challenge)
+
+    challenge_entry = ChallengeTable(
+        sender_user_id = challenge.friend_id,
+        receiver_user_id = challenge.user_id,
+        title = challenge.challenge_name,
+        description = challenge.description,
+        challenge_resources="/",
+        prove_resource="/",
+        status = ChallengeStatus.PENDING,
+    )
+
+    db.add(challenge_entry)
     db.commit()
+
+    hashtags = challenge.hashtags_string.split(',')
+    for hashtag in hashtags:
+        hashtag_entry = HashtagTable()
+        hashtag_entry.challengeId = challenge_entry.id
+        hashtag_entry.text = hashtag
+        db.add(hashtag_entry)
+        
+    db.commit()
+
     return 
+
+
+
 
 
 @router.get("/challenges")
@@ -39,7 +63,7 @@ async def get_pending_challenges(
 async def get_pending_challenges(
         userId: str,
         db: Session = Depends(get_db)
-    ) -> List[Post]:
+    ) -> List[Challenge]:
     challenges = db.exec(select(ChallengeTable).where(ChallengeTable.status == ChallengeStatus.DONE, ChallengeTable.receiver_user_id == userId))
     return challenges
 
@@ -48,7 +72,7 @@ async def get_pending_challenges(
 async def get_accepted_challenges(
         userId: str,
         db: Session = Depends(get_db)
-    ) -> List[ChallengeTable]:
+    ) -> List[Challenge]:
     challenges = db.exec(select(ChallengeTable).where(ChallengeTable.status == ChallengeStatus.ACCEPTED, ChallengeTable.receiver_user_id == userId))
     return challenges
 
