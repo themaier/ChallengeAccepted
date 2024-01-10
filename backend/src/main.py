@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from src.api.users import router as user_router
 from src.api.friendships import router as friendship_router
 from src.api.challenges import router as challenge_router
+from src.api.hashtags import router as hashtags_router
 import os
 
 
@@ -35,6 +36,7 @@ def app() -> FastAPI:
     app.include_router(user_router)
     app.include_router(challenge_router)
     app.include_router(friendship_router)
+    app.include_router(hashtags_router)
     
     app.mount(
         "/resources", StaticFiles(directory="../backend/resources"), name="resources"

@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import Optional, List
+from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
 
 
@@ -14,10 +15,11 @@ class ChallengeTable(SQLModel, table=True):
     __tablename__ = "challenges"
 
     id: Optional[int] = Field(default=None, primary_key=True)
+    sender_user_id: int
+    receiver_user_id: int
     title: str
     description: str
     challenge_resources: str
-    sender_user_id: str
-    receiver_user_id: str
-    prove_ressource: str
+    prove_resource: str
+    done_date: datetime
     status: ChallengeStatus

@@ -25,8 +25,6 @@ async def post_new_users(
     db.refresh(user)
     return user
 
-@router.post("/users/friend")
-
 @router.post("/users/verify")
 async def verify_login(
     user: UserTable,
@@ -42,7 +40,6 @@ async def verify_login(
         )
 
     return existingUser
-
 
 
 @router.get("/users/{id}")
