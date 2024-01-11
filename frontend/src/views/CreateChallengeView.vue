@@ -31,7 +31,10 @@
 
             <div class="mb-3">
                 <label for="hashtags">Hashtag (optional)</label>
-                <input type="text" class="form-control" id="hashtags" v-model="challenge.hashtags">
+                <input type="text" class="form-control" id="hashtags" v-model="challenge.hashtags" aria-describedby="hashtagHelp">
+                <div id="hashtagHelp" class="form-text">
+                  Hashtags müssen mit Komma getrennt werden und dürfen keine Leerzeichen sowie # enthalten.
+                </div>
             </div>
 
             <div class="mb-3">
@@ -79,6 +82,7 @@ const createChallenge = async () => {
     if(!challenge.value.challenge_name || challenge.value.friend_id == null || !challenge.value.description){
       return
     }
+    challenge.value.hashtags = challenge.value.hashtags.replace(/[#\s]/g, '')
     const res = await challengeService.createChallenge(challenge.value)
     if (res.status == 200) {
       needsValidation.value = false
