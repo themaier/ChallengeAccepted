@@ -1,4 +1,5 @@
 from typing import List
+from sqlmodel import Session, select
 from fastapi import APIRouter, Depends, Query, HTTPException, Response, status
 from src.utils.error import raise_404
 from src.db_models.challenges import ChallengeTable, ChallengeStatus
@@ -6,30 +7,36 @@ from src.db_models.text_reaction import TextReactionTable
 from src.db_models.users import UserTable
 from src.api_models.challenge_accepted import *
 from src.db.session import get_db
-from sqlmodel import Session, select
+from src.chatgpt.api_call import check_user_challenge_for_legal
 
 router = APIRouter(tags=["Challenges"])
 
 
 @router.post("/challenges")
-async def add_challenge( 
-        challenge: ChallengeForm,
-        db: Session = Depends(get_db)):
+async def add_challenge(
+    challenge: ChallengeForm,
+    db: Session = Depends(get_db),
+) -> ChallengeForm:
+    if challenge.chatgpt_check:
+        answer = check_user_challenge_for_legal(challenge.description)
+        if answer == "illegal":
+            raise HTTPException(status_code=406, detail="Challenge is illegal.")
 
     challenge_entry = ChallengeTable(
         sender_user_id = challenge.user_id,
         receiver_user_id = challenge.friend_id,
         title = challenge.challenge_name,
         description = challenge.description,
+        reward=challenge.reward,
         challenge_resources="/",
         prove_resource="/",
-        status = ChallengeStatus.PENDING,
+        status=ChallengeStatus.PENDING,
     )
 
     db.add(challenge_entry)
     db.commit()
 
-    hashtags = challenge.hashtags_string.split(',')
+    hashtags = challenge.hashtags.split(",")
     for hashtag in hashtags:
         hashtag_entry = HashtagTable()
         hashtag_entry.challenge_id = challenge_entry.id
@@ -85,7 +92,6 @@ async def get_pending_challenges(
     ) -> List[Challenge]:
 
     challenges_entries = db.exec(select(ChallengeTable).where(ChallengeTable.status == ChallengeStatus.PENDING, ChallengeTable.receiver_user_id == userId)).all()
-
     challenges = map_challenge_list(challenges_entries, db)
 
     return challenges 

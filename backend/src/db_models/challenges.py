@@ -10,6 +10,7 @@ class ChallengeStatus(Enum):
     DECLINED = "declined"
     ACCEPTED = "accepted"
 
+
 class ChallengeTable(SQLModel, table=True):
     __tablename__ = "challenges"
 
@@ -18,6 +19,7 @@ class ChallengeTable(SQLModel, table=True):
     receiver_user_id: int
     title: str
     description: str
+    reward: str
     challenge_resources: str
     prove_resource: str
     done_date: Optional[datetime] = Field()
