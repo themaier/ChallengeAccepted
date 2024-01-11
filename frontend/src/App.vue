@@ -32,7 +32,7 @@
                 </li>
                 <li class="nav-item" v-if="store.loggedIn">
                   <RouterLink :to="{ name: 'signIn' }">
-                    <button @click="store.loggedIn = false" class="btn btn-danger ms-lg-2 mt-2 mt-lg-0">Abmelden</button>
+                    <button @click="logout" class="btn btn-danger ms-lg-2 mt-2 mt-lg-0">Abmelden</button>
                   </RouterLink>
                 </li>
               </ul>
@@ -51,4 +51,11 @@ import { RouterLink, RouterView } from 'vue-router'
 import {useStore} from './stores/store'
 
 const store = useStore()
+
+function logout () {
+  store.loggedIn = false
+  localStorage.removeItem('loggedIn')
+  localStorage.removeItem('user')
+  store.user = null
+}
 </script>

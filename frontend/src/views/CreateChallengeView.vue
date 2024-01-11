@@ -3,41 +3,48 @@
 <div class="container-md">
   <h1 class="my-4">Challenge erstellen</h1>
     <div class="col-md-5 col mt-5 m-auto">
-        <form @submit.prevent="showData = true">
+        <form @submit.prevent="createChallenge" novalidate :class="{'was-validated': needsValidation}" class="needs-validation">
             <div class="mb-3">
-                <label class="form-label" for="challengename">Challenge Name</label>
-                <input class="form-control" id="username" type="text" v-model="formData.challengeName" placeholder="z.B. Spexen" />
+                <label class="form-label" for="challengename">Challenge Name *</label>
+                <input class="form-control" id="challengename" required type="text" v-model="challenge.challenge_name" placeholder="z.B. Spexen" />
+                <div class="invalid-feedback">
+                  Challenge Name muss befüllt sein.
+                </div>
             </div>
             <div class="mb-3">
-              <label class="form-label" for="friendselection">Freund auswählen</label>	
-                <select id="friend" class="form-select" v-model="formData.friend" aria-label="Default select example">
+              <label class="form-label" for="friend">Freund auswählen *</label>	
+                <select id="friend" class="form-select" required v-model="challenge.friend_id" aria-label="Default select example">
                   <option disabled value="">Wähle einen Freund aus</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
+                  <option v-for="friend in friends" :key="friend.id" :value="friend.friend_user_id">{{ friend.friend_user_id }}</option>
                 </select>
+                <div class="invalid-feedback">
+                  Freund muss ausgewählt sein.
+                </div>
             </div>
             <div class="mb-3">
-                <label for="input2">Beschreibung</label>
-                <input type="text" class="form-control" id="description" v-model="formData.description">
+                <label for="description">Beschreibung *</label>
+                <input type="text" class="form-control" required id="description" v-model="challenge.description">
+                <div class="invalid-feedback">
+                  Challenge Beschreibung muss befüllt sein.
+                </div>
             </div>
 
             <div class="mb-3">
-                <label for="input3">Hashtag</label>
-                <input type="text" class="form-control" id="hashtags" v-model="formData.hashtags">
+                <label for="hashtags">Hashtag (optional)</label>
+                <input type="text" class="form-control" id="hashtags" v-model="challenge.hashtags">
             </div>
 
             <div class="mb-3">
-                <label for="input4">Reward (optional)</label>
-                <input type="text" class="form-control" id="reward" v-model="formData.reward">
+                <label for="reward">Reward (optional)</label>
+                <input type="text" class="form-control" id="reward" v-model="challenge.reward">
             </div>
             <div>
-              <label for="checkbox">ChatGPT</label>
-              <input type="checkbox" id="chatgpt_check" v-model="formData.chatgpt_check">
+              <label for="chatgpt_check">ChatGPT</label>
+              <input type="checkbox" id="chatgpt_check" v-model="challenge.chatgpt_check">
             </div>
-            <button type="submit" class="btn btn-primary" @click="createChallenge()">Freund herausfordern</button>
-
-            <div v-if="showData">{{formData}}</div>
+            <button type="submit" class="btn btn-primary" >Freund herausfordern</button>
+            <div v-if="errorMessage != ''" class="mt-1 text-danger">{{errorMessage}}</div>
+            <div v-if="successMessage != ''" class="mt-1 text-success">{{successMessage}}</div>
         </form>
     </div>
 </div>
@@ -47,32 +54,55 @@
 <script setup>
 import {ref} from 'vue'
 import challengeService from "../services/challenge.service.js";
-const showData = ref(false);
-
-const formData = ref({
-    challengeName: '',
-    friend: '',
+import userService from "../services/user.service.js";
+import friendshipService from "../services/friendship.service.js";
+import {useStore} from '../stores/store'
+const errorMessage = ref('')
+const successMessage = ref('')
+const needsValidation = ref(false)
+const store = useStore()
+const challenge = ref({
+    user_id: store.user.id,
+    challenge_name: '',
+    friend_id: null,
     description: '',
     hashtags: '',
     reward: '',
-    chatgpt_check: '',
+    chatgpt_check: false,
   });
+
+const friends = ref('')
 
 const createChallenge = async () => {
   try {
-    let res = {};
-    res = await challengeService.createChallenge(
-      formData.value.challengeName,
-      formData.value.friend,
-      formData.value.description,
-      formData.value.hashtags,
-      formData.value.reward,
-      formData.value.chatgpt_check
-    );
-    console.log(res.data)
-    alert(JSON.stringify(res.data, null, 2));
-    if (res.status == 406) {
-      alert("The challenge is not legal.")
+    needsValidation.value = true
+    if(!challenge.value.challenge_name || challenge.value.friend_id == null || !challenge.value.description){
+      return
+    }
+    const res = await challengeService.createChallenge(challenge.value)
+    if (res.status == 200) {
+      needsValidation.value = false
+      errorMessage.value = ''
+      successMessage.value = "Challenge wurde erfolgreich erstellt."
+      challenge.value = ''
+      friends.value = ''
+    }
+  } catch (error) {
+    successMessage.value = ''
+    errorMessage.value = ''
+    if (error.response && error.response.status === 406) {
+      errorMessage.value= "Diese Challenge ist nicht erlaubt."
+    } else {
+        errorMessage.value="Challenge erstellen hat nicht funktioniert. Bitte versuche es später erneut."
+    }
+  }
+}
+
+const getFriends = async () => {
+  try {
+    const res = await friendshipService.getFriend(store.user.id)
+    if (res.status == 200) {
+      friends.value = res.data
     }
   } catch (error) {
     if (error.response && error.response.status === 406) {
@@ -82,6 +112,9 @@ const createChallenge = async () => {
     }
   }
 }
+
+getFriends()
+
 </script>
 
 

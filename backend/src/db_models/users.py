@@ -6,6 +6,6 @@ class UserTable(SQLModel, table=True):
     __tablename__ = "users"
     
     id: Optional[int] = Field(default=None, primary_key=True)
-    username: int = Field(default=None, unique=True)
+    username: str = Field(default=None, unique=True)
     password: str
     email: str

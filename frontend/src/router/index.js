@@ -7,6 +7,7 @@ import TrendingView from '../views/TrendingView.vue'
 import FriendsView from '../views/FriendsView.vue'
 import CompletedChallengesView from '../views/CompletedChallengesView.vue'
 import FriendsProfileView from '../views/FriendsProfileView.vue'
+import { useStore } from '../stores/store.js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,7 +15,8 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/anmelden',
@@ -24,34 +26,52 @@ const router = createRouter({
     {
       path: '/registrieren',
       name: 'signUp',
-      component: SignUpView
+      component: SignUpView,
     },
     {
       path: '/erstellen',
-      name: 'create',
-      component: CreateChallengeView
+      name: 'create', 
+      component: CreateChallengeView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/freunde',
       name: 'friends',
-      component: FriendsView
+      component: FriendsView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/trends',
       name: 'trending',
-      component: TrendingView
+      component: TrendingView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/abgeschlossen',
       name: 'completed',
-      component: CompletedChallengesView
+      component: CompletedChallengesView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/user/:username',
       name: 'friendProfile',
-      component: FriendsProfileView
+      component: FriendsProfileView,
+      meta: { requiresAuth: true }
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  const store = useStore()
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (store.loggedIn) {
+      next()
+    } else {
+      next({ name: 'signIn' })
+    }
+  } else {
+    next()
+  }
 })
 
 export default router
