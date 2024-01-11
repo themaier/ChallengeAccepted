@@ -50,4 +50,5 @@ npm run dev
 
 Install postgreSQL on your computer
 Open pgadmin -> create db with name challenge-accepted
+host name/address = db_service
 Put your password and username into backend/src/db/local.env !
