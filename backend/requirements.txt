@@ -11,3 +11,4 @@ pyjwt
 datetime
 bcrypt
 python-multipart
+openai
