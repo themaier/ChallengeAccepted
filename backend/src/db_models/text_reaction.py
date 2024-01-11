@@ -7,5 +7,6 @@ class TextReactionTable(SQLModel, table=True):
     
     id: Optional[int] = Field(default=None, primary_key=True)
     user_id: int
-    text: str = Field(default=None, unique=True)
-    email: str
+    challenge_id: int
+    text: str = Field(default=None)
+    image_path: str = Field(default=None)

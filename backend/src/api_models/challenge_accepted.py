@@ -5,11 +5,12 @@ from src.db_models.hashtags import HashtagTable
 
 
 class Challenge(BaseModel):
+    id: int
     publisher_name: str
     title: str
     description: str
     prove_resource_path: str
-    comments: List[TextReactionTable]
+    comments: Optional[List[TextReactionTable]]
     hashtags: List[HashtagTable]
 
 
@@ -19,7 +20,7 @@ class LikeChallengeRequest(BaseModel):
 
 
 class Comment(BaseModel):
-    username: str
+    user_id: int
     comment_text: str
     comment_image_path: str
 
@@ -32,3 +33,10 @@ class ChallengeForm(BaseModel):
     hashtags: str
     reward: str
     chatgpt_check: bool
+
+class ChallengeCompleted(BaseModel):
+    challenge_id: int
+    file_path: str
+
+    
+

@@ -16,7 +16,7 @@ async def add_hashtag(
     
     for hashtag in hashtags:
         hashtagTable = HashtagTable()
-        hashtagTable.challengeId = challengeId
+        hashtagTable.challenge_id = challengeId
         hashtagTable.text = hashtag
 
         db.add(hashtagTable)
