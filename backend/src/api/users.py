@@ -40,10 +40,3 @@ async def verify_login(
         )
 
     return existingUser
-
-
-@router.get("/users/{id}")
-async def get_test(
-    id: int
-) -> str:
-    return "test oida peda, noch ne hülsn"
