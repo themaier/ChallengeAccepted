@@ -38,15 +38,14 @@ class ChallengeForm(BaseModel):
     description: str
     hashtags_list: Optional[str]
     reward: Optional[str]
-    chatgpt_check: bool
+    chatgpt_check: bool = Field(default=False)
+
 
 class ChallengeCompleted(BaseModel):
     challenge_id: int
     file_path: str
 
+
 class Friend(BaseModel):
     user_id: int
     username: str
-
-    
-

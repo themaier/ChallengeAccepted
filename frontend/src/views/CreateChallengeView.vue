@@ -42,24 +42,31 @@
                 <input type="text" class="form-control" id="reward" v-model="challenge.reward">
             </div>
             <div>
-              <label for="chatgpt_check">ChatGPT</label>
               <input type="checkbox" id="chatgpt_check" v-model="challenge.chatgpt_check">
+              <label for="checkbox">Legal check mit ChatGPT</label>
             </div>
-            <button type="submit" class="btn btn-primary" >Freund herausfordern</button>
+            <button type="submit" class="btn btn-primary" style="text-align: center" @click="createChallenge()">Freund herausfordern</button>
             <div v-if="errorMessage != ''" class="mt-1 text-danger">{{errorMessage}}</div>
             <div v-if="successMessage != ''" class="mt-1 text-success">{{successMessage}}</div>
+            <div v-if="challenge.chatgpt_check">
+              <!-- <br>
+              <CheckoutItem />
+              <CheckoutPayment /> -->
+            </div>
         </form>
     </div>
 </div>
+<div id="paypal-button-container"></div>
 </main>
 </template>
 
 <script setup>
 import {ref} from 'vue'
 import challengeService from "../services/challenge.service.js";
-import userService from "../services/user.service.js";
 import friendshipService from "../services/friendship.service.js";
 import {useStore} from '../stores/store'
+import CheckoutPayment from '../components/CheckoutPayment.vue'
+import CheckoutItem from '../components/CheckoutItem.vue'
 const errorMessage = ref('')
 const successMessage = ref('')
 const needsValidation = ref(false)
