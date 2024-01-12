@@ -16,7 +16,7 @@ router = APIRouter(tags=["Challenges"])
 async def add_challenge(
     challenge: ChallengeForm,
     db: Session = Depends(get_db),
-) -> ChallengeForm:
+):
     if challenge.chatgpt_check:
         answer = check_user_challenge_for_legal(challenge.description)
         if answer == "illegal":
@@ -35,17 +35,18 @@ async def add_challenge(
 
     db.add(challenge_entry)
     db.commit()
-
-    hashtags = challenge.hashtags.split(",")
+    
+    hashtags = challenge.hashtags_list.split(",")
     for hashtag in hashtags:
         hashtag_entry = HashtagTable()
         hashtag_entry.challenge_id = challenge_entry.id
         hashtag_entry.text = hashtag
         db.add(hashtag_entry)
-        
     db.commit()
 
     return 
+        
+
 
 
 @router.get("/challenges")
