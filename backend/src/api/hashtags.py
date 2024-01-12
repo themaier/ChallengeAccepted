@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Depends, Query, HTTPException, Response, status
+from src.db_models.hashtag_challenge import HashtagChallengeTable
 from src.utils.error import raise_404
 from src.db_models.hashtags import HashtagTable
 from src.db.session import get_db
@@ -26,9 +27,9 @@ async def add_hashtag(
 
 @router.get("/hashtags")
 async def get_hashtags(
-        challengeId: int,
         db: Session = Depends(get_db)
-    ):
+    ) -> List[HashtagTable]:
     
     return db.exec(select(HashtagTable)).all()
+
     

@@ -3,6 +3,9 @@ from typing import Optional, List
 from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
 
+from src.db_models.hashtag_challenge import HashtagChallengeTable
+
+
 
 class ChallengeStatus(Enum):
     DONE = "done"
@@ -24,3 +27,5 @@ class ChallengeTable(SQLModel, table=True):
     prove_resource: str
     done_date: Optional[datetime] = Field()
     status: ChallengeStatus
+
+    hashtags: Optional[List["HashtagTable"]] = Relationship(back_populates="challenges", link_model=HashtagChallengeTable)
