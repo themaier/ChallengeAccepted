@@ -30,13 +30,17 @@ class ChallengeForm(BaseModel):
     challenge_name: str
     friend_id: int
     description: str
-    hashtags: str
+    hashtags_list: str
     reward: str
     chatgpt_check: bool
 
 class ChallengeCompleted(BaseModel):
     challenge_id: int
     file_path: str
+
+class Friend(BaseModel):
+    user_id: int
+    username: str
 
     
 
