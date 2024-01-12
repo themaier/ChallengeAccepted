@@ -5,7 +5,6 @@ import os
 from dotenv import load_dotenv
 
 # db_model import is important for creating the tables in postgres
-# from src.db_models.example import ExampleTable
 from src.db_models import *
 from src.db_models.challenges import ChallengeTable
 from src.db_models.friends import FriendsTable
