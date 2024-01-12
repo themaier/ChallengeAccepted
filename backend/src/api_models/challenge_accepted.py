@@ -10,6 +10,7 @@ class Challenge(BaseModel):
     title: str
     description: str
     prove_resource_path: str
+    reward: Optional[str]
     comments: Optional[List[TextReactionTable]]
     hashtags: List[HashtagTable]
 
