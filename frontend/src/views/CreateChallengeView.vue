@@ -15,7 +15,7 @@
               <label class="form-label" for="friend">Freund auswählen *</label>	
                 <select id="friend" class="form-select" required v-model="challenge.friend_id" aria-label="Default select example">
                   <option disabled value="">Wähle einen Freund aus</option>
-                  <option v-for="friend in friends" :key="friend.id" :value="friend.friend_user_id">{{ friend.friend_user_id }}</option>
+                  <option v-for="friend in friends" :key="friend.user_id" :value="friend.user_id">{{ friend.username }}</option>
                 </select>
                 <div class="invalid-feedback">
                   Freund muss ausgewählt sein.
@@ -31,7 +31,7 @@
 
             <div class="mb-3">
                 <label for="hashtags">Hashtag (optional)</label>
-                <input type="text" class="form-control" id="hashtags" v-model="challenge.hashtags" aria-describedby="hashtagHelp">
+                <input type="text" class="form-control" id="hashtags" v-model="challenge.hashtags_list" aria-describedby="hashtagHelp">
                 <div id="hashtagHelp" class="form-text">
                   Hashtags müssen mit Komma getrennt werden und dürfen keine Leerzeichen sowie # enthalten.
                 </div>
@@ -69,8 +69,8 @@ const challenge = ref({
     challenge_name: '',
     friend_id: null,
     description: '',
-    hashtags: '',
-    reward: '',
+    hashtags_list: null,
+    reward: null,
     chatgpt_check: false,
   });
 
@@ -79,10 +79,15 @@ const friends = ref('')
 const createChallenge = async () => {
   try {
     needsValidation.value = true
+
     if(!challenge.value.challenge_name || challenge.value.friend_id == null || !challenge.value.description){
       return
     }
-    challenge.value.hashtags = challenge.value.hashtags.replace(/[#\s]/g, '')
+    if (challenge.value.hashtags_list === '') challenge.value.hashtags_list = null
+    if (challenge.value.reward === '') challenge.value.reward = null
+    if (challenge.value.hashtags_list)	{
+      challenge.value.hashtags_list = challenge.value.hashtags_list.replace(/[#\s]/g, '')
+    }
     const res = await challengeService.createChallenge(challenge.value)
     if (res.status == 200) {
       needsValidation.value = false
@@ -91,7 +96,7 @@ const createChallenge = async () => {
       challenge.value = ''
       friends.value = ''
     }
-  } catch (error) {
+  } catch (error) { 
     successMessage.value = ''
     errorMessage.value = ''
     if (error.response && error.response.status === 406) {
@@ -107,7 +112,6 @@ const getFriends = async () => {
     const res = await friendshipService.getFriend(store.user.id)
     if (res.status == 200) {
       friends.value = res.data
-      console.log(store.user.id)
     }
   } catch (error) {
     if (error.response && error.response.status === 406) {

@@ -26,8 +26,8 @@
       <div  v-if="acceptedChallenges[0]" class="container-md bg-body-tertiary rounded py-2">
         <ul class="px-0 my-0">
           <li  class="row align-items-center py-3 gy-2 gy-lg-0" v-for="acceptedChallenge in acceptedChallenges" :key="acceptedChallenge.id">
-            <div class="col-lg-2">{{acceptChallenge.title}}</div>
-            <div class="col-lg-7">{{acceptChallenge.description}}</div>
+            <div class="col-lg-2">{{acceptedChallenge.title}}</div>
+            <div class="col-lg-7">{{acceptedChallenge.description}}</div>
             <div class="col-3 col-lg align-self-end d-flex  justify-content-lg-end d-flex-column">
               <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#proveModal">Abschließen</button>
             </div>
@@ -73,7 +73,6 @@ const getAcceptedChallenges = async () => {
     const res = await challengeService.getAcceptedChallenges(store.user.id)
     if (res.status == 200) {
       acceptedChallenges.value = res.data
-      console.log(acceptedChallenges.value)
     }
   } catch (error) {
     console.log(error)
@@ -85,7 +84,29 @@ const getPendingChallenges = async () => {
     const res = await challengeService.getPendingChallenges(store.user.id)
     if (res.status == 200) {
       pendingChallenges.value = res.data
-      console.log(pendingChallenges.value)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const acceptChallenge = async (challengeId) => {
+  try {
+    const res = await challengeService.acceptChallenge(challengeId)
+    if (res.status == 200) {
+      getAcceptedChallenges()
+      getPendingChallenges()
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const declineChallenge = async (challengeId) => {
+  try {
+    const res = await challengeService.declineChallenge(challengeId)
+    if (res.status == 200) {
+      getPendingChallenges()
     }
   } catch (error) {
     console.log(error)

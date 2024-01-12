@@ -36,12 +36,14 @@ async def add_challenge(
     db.add(challenge_entry)
     db.commit()
     
-    hashtags = challenge.hashtags_list.split(",")
-    for hashtag in hashtags:
-        hashtag_entry = HashtagTable()
-        hashtag_entry.challenge_id = challenge_entry.id
-        hashtag_entry.text = hashtag
-        db.add(hashtag_entry)
+    if(challenge.hashtags_list):
+        hashtags = challenge.hashtags_list.split(",")
+        for hashtag in hashtags:
+            hashtag_entry = HashtagTable()
+            hashtag_entry.challenge_id = challenge_entry.id
+            hashtag_entry.text = hashtag
+            db.add(hashtag_entry)
+
     db.commit()
 
     return 
@@ -137,7 +139,7 @@ async def accept_challenge(
     db.commit()
 
 
-@router.put("/challenges/{id}/accept")
+@router.put("/challenges/{challenge_id}/accept")
 async def accept_challenge(
         challenge_id: int,
         db: Session = Depends(get_db)
@@ -150,7 +152,7 @@ async def accept_challenge(
     db.commit()
 
 
-@router.put("/challenges/{id}/done")
+@router.put("/challenges/{challenge_id}/done")
 async def decline_challenge(
         challengeCompleted: ChallengeCompleted,
         db: Session = Depends(get_db)
@@ -163,7 +165,7 @@ async def decline_challenge(
     db.commit()
 
 
-@router.put("/challenges/{id}/decline")
+@router.put("/challenges/{challenge_id}/decline")
 async def decline_challenge(
         challenge_id: int,
         db: Session = Depends(get_db)

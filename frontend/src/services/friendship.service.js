@@ -23,6 +23,12 @@ class FriendshipService {
             return response
         })
     }
+
+    async deleteFriend(user_id, friend_user_id) {
+        return await axios.delete(API_URL + "?user_id=" + user_id + "&friend_user_id=" + friend_user_id ).then(response => {
+            return response
+        })
+    }
 }
 
 export default new FriendshipService();

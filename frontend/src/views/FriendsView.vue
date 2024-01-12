@@ -24,10 +24,10 @@
       <div v-if="!friends[0]">Du hast im Moment keine Freunde.</div>
       <div v-if="friends[0]" class="container-md bg-body-tertiary rounded py-2">
         <ul class="px-0 my-0">
-          <li v-for="friend in friends" :key="friend.friend_user_id" class="row align-items-center py-3 gy-2 gy-lg-0">
-            <RouterLink :to="{ name: 'friendProfile', params: { id: friend.friend_user_id } }" class="col-lg-2 link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">{{friend.friend_user_id}}</RouterLink>
+          <li v-for="friend in friends" :key="friend.user_id" class="row align-items-center py-3 gy-2 gy-lg-0">
+            <RouterLink :to="{ name: 'friendProfile', params: { id: friend.user_id } }" class="col-lg-2 link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">{{friend.username}}</RouterLink>
             <div class="col-3 col-lg align-self-end d-flex  justify-content-lg-end d-flex-column">
-              <button class="btn btn-danger">Entfernen</button>
+              <button class="btn btn-danger" @click="deleteFriend(friend.user_id)">Entfernen</button>
             </div>
           </li>
         </ul>
@@ -85,6 +85,17 @@ async function addFriend(friendId) {
   try {
     const response = await friendshipService.addFriend(store.user.id, friendId);
     if (response.status == 200) {
+      getFriends();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function deleteFriend(friendId) {
+  try {
+    const response = await friendshipService.deleteFriend(store.user.id, friendId);
+    if (response.status == 204) {
       getFriends();
     }
   } catch (error) {

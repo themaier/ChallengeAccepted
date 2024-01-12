@@ -21,6 +21,18 @@ class ChallengeService {
             return response
         })
     }
+
+    async acceptChallenge(id) {
+        return await axios.put(API_URL + id + '/accept').then(response => {
+            return response
+        })
+    }
+
+    async declineChallenge(id) {
+        return await axios.put(API_URL + id + '/decline').then(response => {
+            return response
+        })
+    }
 };
 
 export default new ChallengeService();

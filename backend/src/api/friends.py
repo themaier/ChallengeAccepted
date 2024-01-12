@@ -5,7 +5,7 @@ from src.db_models.users import UserTable
 from src.utils.error import raise_404
 from src.db_models.friends import FriendsTable
 from src.db.session import get_db
-from sqlmodel import Session, select
+from sqlmodel import Session, select, delete
 
 router = APIRouter(tags=["Friends"])
 
@@ -35,6 +35,17 @@ async def get_friends_for(
          friendsList.append(friend_entity)
 
     return friendsList
+
+@router.delete("/friendship")
+async def delete_friendship(
+    user_id: str,
+    friend_user_id: str,
+    db: Session = Depends(get_db)
+) -> Response:
+    db.exec(delete(FriendsTable).where(FriendsTable.user_id == user_id, FriendsTable.friend_user_id == friend_user_id))
+    db.exec(delete(FriendsTable).where(FriendsTable.user_id == friend_user_id, FriendsTable.friend_user_id == user_id))
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.post("/friendship")
