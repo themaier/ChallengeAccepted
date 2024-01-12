@@ -14,6 +14,14 @@ async def get_all_users(
     db_users = db.exec(select(UserTable)).all()
     return db_users
 
+@router.get("/users/{user_id}")
+async def get_all_users(
+    user_id: int,
+    db: Session = Depends(get_db)
+) -> UserTable:
+    db_user = db.exec(select(UserTable).where(UserTable.id == user_id)).first()
+    return db_user
+
 
 @router.post("/users")
 async def post_new_users(

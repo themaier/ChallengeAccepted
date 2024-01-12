@@ -96,12 +96,16 @@ def map_challenge_list(
         for challenge in challenges_entries:
             user = db.exec(select(UserTable).where(UserTable.id== challenge.sender_user_id)).first()
             comments = db.exec(select(TextReactionTable).where(TextReactionTable.challenge_id == challenge.id)).all()
+            receiver_name = db.exec(select(UserTable).where(UserTable.id == challenge.receiver_user_id)).first().username
             challenge_obj = Challenge(
                 id=challenge.id,
                 publisher_name=user.username,
+                receiver_name=receiver_name,
+                receiver_id=challenge.receiver_user_id,
                 title=challenge.title,
                 description = challenge.description,
                 prove_resource_path=challenge.prove_resource,
+                done_date=challenge.done_date,
                 hashtags=challenge.hashtags,
                 comments=comments,
                 reward=challenge.reward
@@ -177,7 +181,7 @@ async def accept_challenge(
 
 
 @router.put("/challenges/{challenge_id}/done")
-async def decline_challenge(
+async def complete_challenge(
         challengeCompleted: ChallengeCompleted,
         db: Session = Depends(get_db)
     ):
@@ -203,7 +207,7 @@ async def decline_challenge(
 
 
 @router.get("/challenges/{hashtag}")
-async def decline_challenge(
+async def get_challenges_by_hashtag(
         hashtag: str,
         db: Session = Depends(get_db)
     ) -> List[Challenge]:

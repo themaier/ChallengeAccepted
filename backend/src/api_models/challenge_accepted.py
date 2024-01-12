@@ -2,14 +2,19 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from src.db_models.text_reaction import TextReactionTable
 from src.db_models.hashtags import HashtagTable
+from datetime import datetime
+
 
 
 class Challenge(BaseModel):
     id: int
     publisher_name: str
+    receiver_name: str
+    receiver_id: int
     title: str
     description: str
     prove_resource_path: str
+    done_date: Optional[datetime]
     reward: Optional[str]
     comments: Optional[List[TextReactionTable]]
     hashtags: List[HashtagTable]
