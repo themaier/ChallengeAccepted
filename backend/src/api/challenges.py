@@ -1,8 +1,11 @@
+from datetime import datetime
 from typing import List
+from sqlalchemy import desc
 from sqlmodel import Session, select
 from fastapi import APIRouter, Depends, Query, HTTPException, Response, status
 from src.utils.error import raise_404
 from src.db_models.challenges import ChallengeTable, ChallengeStatus
+from src.db_models.hashtag_challenge import HashtagChallengeTable
 from src.db_models.text_reaction import TextReactionTable
 from src.db_models.users import UserTable
 from src.api_models.challenge_accepted import *
@@ -35,18 +38,23 @@ async def add_challenge(
 
     db.add(challenge_entry)
     db.commit()
-    
+
     hashtags = challenge.hashtags_list.split(",")
     for hashtag in hashtags:
         hashtag_entry = HashtagTable()
         hashtag_entry.challenge_id = challenge_entry.id
         hashtag_entry.text = hashtag
         db.add(hashtag_entry)
+
+        linktable_entry = HashtagChallengeTable(
+            challenge_id=challenge_entry.id,
+            hashtag_id=hashtag_entry.id
+        )
+        db.add(linktable_entry)
+
     db.commit()
-
     return 
-        
-
+    
 
 
 @router.get("/challenges")
@@ -157,6 +165,7 @@ async def decline_challenge(
     ):
     challenge = db.exec(select(ChallengeTable).where(ChallengeTable.id == challengeCompleted.challenge_id)).first()
     challenge.status = ChallengeStatus.DONE
+    challenge.done_date = datetime.now()
     challenge.prove_resource = challengeCompleted.file_path
     
     db.add(challenge)
@@ -173,5 +182,21 @@ async def decline_challenge(
 
     db.add(challenge)
     db.commit()
+
+
+
+
+@router.get("/challenges/latest/{limit}")
+async def get_latest_challenges(
+        limit: int,
+        db: Session = Depends(get_db)
+    ) -> List[Challenge]:
+    
+    latest_entires = db.exec(select(ChallengeTable).order_by(desc(ChallengeTable.done_date)).where(ChallengeTable.status == ChallengeStatus.DONE).limit(limit)).all()
+
+    challenges = map_challenge_list(latest_entires, db)
+    return challenges
+
+
 
 
