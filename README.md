@@ -54,4 +54,4 @@ host name/address = db_service
 Put your password and username into backend/src/db/local.env !
 
 access AWS:
-ssh -i Challenge-Accepted.pem ec2-user@ec2-3-121-235-18.eu-central-1.compute.amazonaws.com
+ssh -i Challenge-Accepted.pem ubuntu@ec2-18-196-97-249.eu-central-1.compute.amazonaws.com
