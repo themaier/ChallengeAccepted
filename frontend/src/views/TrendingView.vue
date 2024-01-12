@@ -7,7 +7,7 @@
             <div class="d-flex flex-column align-items-center gap-3">
                 <div class="d-flex rounded bg-body flex-column w-100 py-2" style="max-width: 470px; max-height: 600px">
                     <div class="px-2 mb-2 d-flex justify-content-between">
-                        <RouterLink :to="{ name: 'friendProfile', params: { username: 'Tobi' } }" class="col-lg-2 link-dark fw-bold link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover">Tobi</RouterLink>
+                        <RouterLink :to="{ name: 'friendProfile', params: { id: 'Tobi' } }" class="col-lg-2 link-dark fw-bold link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover">Tobi</RouterLink>
                         <span>19.1.2024 17:00</span>
                     </div>
                     <img class="rounded" style="max-height:600px" src="https://images.pexels.com/photos/16452394/pexels-photo-16452394/free-photo-of-desert.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1">
@@ -21,7 +21,7 @@
                 </div>
                 <div class="d-flex bg-body flex-column w-100 py-2" style="max-width: 470px">
                     <div class="px-2 mb-2 d-flex justify-content-between">
-                        <RouterLink :to="{ name: 'friendProfile', params: { username: 'Tobi' } }" class="col-lg-2 link-dark fw-bold link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover">Tobi</RouterLink>
+                        <RouterLink :to="{ name: 'friendProfile', params: { id: 'Tobi' } }" class="col-lg-2 link-dark fw-bold link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover">Tobi</RouterLink>
                         <span>19.1.2024 17:00</span>
                     </div>
                     <img class="rounded" style="max-height:600px" src="https://i.ibb.co/2ZxBFVp/img2.jpg">

@@ -53,7 +53,7 @@ async function login(){
             store.loggedIn = true
         }       
     } catch(error) {
-        if(error.status == 401){
+        if(error.response.status == 401){
             errorMessage.value = "Username oder Passwort falsch!"
         }
         else{

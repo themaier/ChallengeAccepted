@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 # from src.db_models.example import ExampleTable
 from src.db_models import *
 from src.db_models.challenges import ChallengeTable
-from src.db_models.friendships import FriendshipTable
+from src.db_models.friends import FriendsTable
 from src.db_models.hashtags import HashtagTable
 from src.db_models.text_reaction import TextReactionTable
 from src.db_models.users import UserTable

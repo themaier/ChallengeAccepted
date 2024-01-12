@@ -107,6 +107,7 @@ const getFriends = async () => {
     const res = await friendshipService.getFriend(store.user.id)
     if (res.status == 200) {
       friends.value = res.data
+      console.log(store.user.id)
     }
   } catch (error) {
     if (error.response && error.response.status === 406) {

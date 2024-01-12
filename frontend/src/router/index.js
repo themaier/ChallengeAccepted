@@ -53,7 +53,7 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/user/:username',
+      path: '/user/:id',
       name: 'friendProfile',
       component: FriendsProfileView,
       meta: { requiresAuth: true }
