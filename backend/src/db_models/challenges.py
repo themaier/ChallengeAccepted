@@ -19,7 +19,7 @@ class ChallengeTable(SQLModel, table=True):
     receiver_user_id: int
     title: str
     description: str
-    reward: str
+    reward: Optional[str]
     challenge_resources: str
     prove_resource: str
     done_date: Optional[datetime] = Field()
