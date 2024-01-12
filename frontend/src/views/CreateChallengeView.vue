@@ -49,9 +49,9 @@
             <div v-if="errorMessage != ''" class="mt-1 text-danger">{{errorMessage}}</div>
             <div v-if="successMessage != ''" class="mt-1 text-success">{{successMessage}}</div>
             <div v-if="challenge.chatgpt_check">
-              <br>
+              <!-- <br>
               <CheckoutItem />
-              <CheckoutPayment />
+              <CheckoutPayment /> -->
             </div>
         </form>
     </div>
