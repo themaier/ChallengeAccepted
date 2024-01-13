@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8000/users/'
+const ipv4 = import.meta.env.VITE_IPV4 || 'localhost';
+const API_URL = `http://${ipv4}:8000/users/`
+
 class UserService {
 
     async register(user) {
