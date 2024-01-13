@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8000/friendship/'
+const ipv4 = import.meta.env.VITE_IPV4 || 'localhost';
+const API_URL = `http://${ipv4}:8000/friendship/`
+
 class FriendshipService {
 
     async addFriend(id, friendId) {
