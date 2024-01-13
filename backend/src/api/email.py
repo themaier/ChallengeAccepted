@@ -5,7 +5,7 @@ from src.email.send_email import send_email_background
 router = APIRouter(tags=["Email"])
 
 
-@router.post("/send-email/backgroundtasks")
+@router.post("/email")
 def send_email_backgroundtasks(
     background_tasks: BackgroundTasks, email_data: Email
 ) -> str:
