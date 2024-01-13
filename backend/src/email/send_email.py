@@ -3,7 +3,7 @@ from fastapi import BackgroundTasks
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from dotenv import load_dotenv
 from jinja2 import Template
-from src.api_models.email import Email
+from src.api_models.email import ChallengeEmail
 
 load_dotenv(".env")
 
@@ -31,18 +31,20 @@ conf = ConnectionConfig(
 )
 
 
-def send_email_background(background_tasks: BackgroundTasks, email_data: Email):
+def send_email_background(
+    background_tasks: BackgroundTasks, email_data: ChallengeEmail
+):
     with open("./src/email/email.html.jinja") as f:
         tmpl = Template(f.read())
     html_content = tmpl.render(
         title="Challenge-Accepted",
-        username=email_data.username,
-        friend_username=email_data.frient_username,
+        sent_to_username=email_data.send_to_username,
+        sent_from_username=email_data.sent_from_username,
     )
 
     message = MessageSchema(
         subject="Challenge-Accepted",
-        recipients=[email_data.email],
+        recipients=[email_data.send_to_email],
         body=html_content,
         subtype="html",
     )

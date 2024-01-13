@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class Email(BaseModel):
-    username: str
-    email: str
-    frient_username: str
+class ChallengeEmail(BaseModel):
+    send_to_username: str
+    send_to_email: str
+    sent_from_username: str

@@ -5,7 +5,6 @@ from src.db_models.hashtags import HashtagTable
 from datetime import datetime
 
 
-
 class Challenge(BaseModel):
     id: int
     publisher_name: str
