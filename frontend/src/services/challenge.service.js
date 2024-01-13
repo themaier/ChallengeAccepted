@@ -34,6 +34,25 @@ class ChallengeService {
             return response
         })
     }
+
+    async getCompletedChallengesByUser(id) {
+        return await axios.get(API_URL + id + '/done').then(response => {
+            return response
+        })
+    }
+
+    async getCompletedChallengesByTag(hashtag) {
+        return await axios.get(API_URL + hashtag).then(response => {
+            return response
+        })
+    }
+
+    async getTrendingChallenges() {
+        return await axios.get(API_URL + 'latest/' + 10).then(response => {
+            return response
+        })
+    }
+
 };
 
 export default new ChallengeService();

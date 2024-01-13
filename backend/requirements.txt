@@ -12,3 +12,4 @@ datetime
 bcrypt
 python-multipart
 openai
+paypalrestsdk
