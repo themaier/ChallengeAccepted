@@ -1,41 +1,28 @@
 <template>
     <div class="container-md">
-        <h1 class="my-4">Tobi - Abgeschlossene Challenges</h1>
+        <h1 class="my-4">{{username}} - Abgeschlossene Challenges</h1>
         <div class="p-3">
             <div class="d-flex flex-column align-items-center gap-3">
-                <div class="d-flex rounded bg-body flex-column w-100 py-2" style="max-width: 470px; max-height: 600px">
+                <div v-for="challenge in challenges" :key="challenge" class="d-flex rounded bg-body flex-column w-100 py-2" style="max-width: 470px; max-height: 600px">
                     <div class="px-2 mb-2 d-flex justify-content-between">
-                        <span class="fw-bold">Tobi</span>
-                        <span>19.1.2024 17:00</span>
+                        <span class="fw-bold">{{challenge.receiver_name}}</span>
+                        <span>{{formatDate(challenge.done_date)}}</span>
                     </div>
-                    <img class="rounded" style="max-height:600px" src="https://images.pexels.com/photos/16452394/pexels-photo-16452394/free-photo-of-desert.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1">
+                    <img class="rounded" style="max-height:600px" :src="challenge.prove_resource_path">
                     <div class=" px-1 py-2">
-                        <button @click="like = !like" :class="{ 'icon--love--filled': like }" class="btn icon icon--love icon--size-1-5 icon--button me-2">120</button>
-                        <button class="btn icon icon--comment icon--size-1-5 icon--button" data-bs-toggle="modal" data-bs-target="#comment">2</button>
+                        <button  @click="like = !like" :class="{ 'icon--love--filled': like }" class="btn icon icon--love icon--size-1-5 icon--button me-2">120</button>
+                        <button class="btn icon icon--comment icon--size-1-5 icon--button" data-bs-toggle="modal" :data-bs-target="'#comment'+ challenge.id">{{challenge.comments.length}}</button>
                     </div>
-                    <div class="px-2 fw-bold">Challenge 1</div>
-                    <div class="px-2">Trinke 2 Tequila shots</div>
-                    <div class="px-2"><a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">#geil</a><a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">#nice</a></div>
-                </div>
-                <div class="d-flex bg-body flex-column w-100 py-2" style="max-width: 470px">
-                    <div class="px-2 mb-2 d-flex justify-content-between">
-                        <span class="fw-bold">Tobi</span>
-                        <span>19.1.2024 17:00</span>
-                    </div>
-                    <img class="rounded" style="max-height:600px" src="https://i.ibb.co/2ZxBFVp/img2.jpg">
-                    <div class=" px-1 py-2">
-                        <button  @click="like = !like" :class="{ 'icon--love--filled': like }" class="btn icon icon--love icon--size-1-5 icon--button me-2">110</button>
-                        <button class="btn icon icon--comment icon--size-1-5 icon--button" data-bs-toggle="modal" data-bs-target="#comment">3</button>
-                    </div>
-                    <div class="px-2 fw-bold">Challenge 1</div>
-                    <div class="px-2">Trinke 2 Tequila shots</div>
-                    <div class="px-2"><a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">#geil</a><a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">#nice</a></div>
+                    <div class="px-2 fw-bold">{{ challenge.title }}</div>
+                    <div class="px-2">{{ challenge.description }}</div>
+                    <div v-if="challenge.reward" class="px-2">Reward: {{ challenge.reward }}</div>
+                    <div v-if="challenge.hashtags" class="px-2"><a v-for="hashtag in challenge.hashtags" :href="'?'+ hashtag.text" :key="hashtag.id" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">#{{hashtag.text}}</a></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="comment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div v-for="challenge in challenges" :key="challenge.id" class="modal fade" :id="'comment' + challenge.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -44,9 +31,9 @@
                 </div>
                 <div class="modal-body">
                     <ul style="max-height:500px; overflow: auto;" class="px-0">
-                        <li class="d-flex justify-content-between">
-                            <span class="fw-bold me-2">Tobi</span>
-                            <span>Geilccccccccccyx ceeeeeeedc dsd dddddddddddddd  ffffffffffffffd     fffff</span>
+                        <li v-for="comment in challenge.comments" :key="comment.id" class="d-flex justify-content-between">
+                            <span class="fw-bold me-2">{{comment.username}}</span>
+                            <span>{{comment.text}}</span>
                         </li>
                     </ul>
                     <form>
@@ -63,6 +50,47 @@
 
 <script setup>
 import { ref } from 'vue'
+import challengeService from '../services/challenge.service.js'
+import {useStore} from '../stores/store'
+import { useRouter, useRoute } from 'vue-router'
+import userService from '../services/user.service.js'
+
+const route = useRoute()
 const like = ref(false)
+const store = useStore()
+const challenges = ref([])
+const username = ref('')
+
+const formatDate = (dateString) => {
+  const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('de-DE', options).format(date);
+};
+
+const getCompletedChallengesByUser = async (id) => {
+
+    try {
+        const response = await challengeService.getCompletedChallengesByUser(id)
+        if (response.status == 200) {
+            challenges.value = response.data
+        }
+    } catch (error) {
+        challenges.value = []
+    }
+}
+
+const getUsername = async (id) => {
+    try {
+        const response = await userService.getUser(id)
+        if (response.status == 200) {
+            username.value =  response.data.username
+        }
+    } catch (error) {
+        username.value = ''
+    }
+}
+
+getCompletedChallengesByUser(route.params.id)
+getUsername(route.params.id)
 
 </script>
