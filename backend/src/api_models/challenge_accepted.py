@@ -48,6 +48,7 @@ class ChallengeForm(BaseModel):
     hashtags_list: Optional[str]
     reward: Optional[str]
     chatgpt_check: bool = Field(default=False)
+    email_check: bool = Field(default=False)
 
 
 class ChallengeCompleted(BaseModel):

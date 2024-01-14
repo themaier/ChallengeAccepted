@@ -37,7 +37,7 @@ def send_email_background(
     with open("./src/email/email.html.jinja") as f:
         tmpl = Template(f.read())
     html_content = tmpl.render(
-        title="Challenge-Accepted",
+        title="Challenge erhalten.",
         sent_to_username=email_data.send_to_username,
         sent_from_username=email_data.sent_from_username,
     )
