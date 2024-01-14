@@ -13,3 +13,4 @@ bcrypt
 python-multipart
 openai
 paypalrestsdk
+fastapi-mail

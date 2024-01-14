@@ -45,6 +45,10 @@
               <input type="checkbox" id="chatgpt_check" v-model="challenge.chatgpt_check">
               <label for="checkbox">Legal check mit ChatGPT</label>
             </div>
+            <div>
+              <input type="checkbox" id="chatgpt_check" v-model="challenge.email_check">
+              <label for="checkbox">Email an Freund senden</label>
+            </div>
             <button type="submit" class="btn btn-primary" style="text-align: center">Freund herausfordern</button>
             <div v-if="errorMessage != ''" class="mt-1 text-danger">{{errorMessage}}</div>
             <div v-if="successMessage != ''" class="mt-1 text-success">{{successMessage}}</div>
@@ -79,6 +83,7 @@ const challenge = ref({
     hashtags_list: null,
     reward: null,
     chatgpt_check: false,
+    email_check: false,
   });
 
 const friends = ref('')
