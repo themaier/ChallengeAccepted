@@ -194,14 +194,12 @@ async def get_pending_challenges(
 
 @router.get("/challenges/{userId}/done")
 async def get_done_challenges(
-    userId: str, logged_in_user_id: int, db: Session = Depends(get_db)
-) -> List[Challenge]:
-    challenges_entries = db.exec(
-        select(ChallengeTable).where(
-            ChallengeTable.status == ChallengeStatus.DONE,
-            ChallengeTable.receiver_user_id == userId,
-        )
-    ).all()
+        userId: str,
+        logged_in_user_id: int,
+        db: Session = Depends(get_db)
+    ) -> List[Challenge]:
+
+    challenges_entries = db.exec(select(ChallengeTable).order_by(desc(ChallengeTable.done_date)).where(ChallengeTable.status == ChallengeStatus.DONE, ChallengeTable.receiver_user_id == userId)).all()
     challenges = map_challenge_list(logged_in_user_id, challenges_entries, db)
     return challenges
 
@@ -311,12 +309,14 @@ async def decline_challenge(challenge_id: int, db: Session = Depends(get_db)):
 
 @router.get("/challenges/{hashtag}")
 async def get_challenges_by_hashtag(
-    userId: int, hashtag: str, db: Session = Depends(get_db)
-) -> List[Challenge]:
-    hashtag_entry = db.exec(
-        select(HashtagTable).where(HashtagTable.text == hashtag)
-    ).first()
-    challenges = map_challenge_list(userId, hashtag_entry.challenges, db)
+        userId: int,
+        hashtag: str,
+        db: Session = Depends(get_db)
+    ) -> List[Challenge]:
+
+    hashtag_entry = db.exec(select(HashtagTable).where(HashtagTable.text == hashtag)).first()
+    sorted_entries = sorted(hashtag_entry.challenges, key=lambda x: x.done_date, reverse=True)
+    challenges = map_challenge_list(userId, sorted_entries, db)
     return challenges
 
 

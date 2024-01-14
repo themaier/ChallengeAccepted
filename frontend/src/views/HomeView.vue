@@ -29,7 +29,7 @@
             <div class="col-lg-2">{{acceptedChallenge.title}}</div>
             <div class="col-lg-7">{{acceptedChallenge.description}}</div>
             <div class="col-3 col-lg align-self-end d-flex  justify-content-lg-end d-flex-column">
-              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#proveModal">Abschließen</button>
+              <button class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="'#proveModal'+acceptedChallenge.id">Abschließen</button>
             </div>
           </li>
         </ul>
@@ -37,25 +37,7 @@
     </div>
   </div>
 
-      <div class="modal fade" id="proveModal" tabindex="-1" aria-labelledby="challengeFinishLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title h5" id="challengeFinishLabel">Challenge abschließen</h2>
-                    <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form @submit.prevent="completeChallenge()">
-                      <div class="mb-3">
-                        <label for="formFile" class="form-label">Foto oder Video hochladen</label>
-                        <input class="form-control" id="formFile" type="file" name="image" accept="image/png, image/jpg, image/jpeg, video/mp4" capture="user">
-                      </div>
-                      <button class="btn btn-primary" >Senden</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+  <ProveChallengeModal :challenges="acceptedChallenges" @uploadedSucessfully="uploadedSucessfully()" :success="success"></ProveChallengeModal>
 
 
     <div v-if="success" class="animation">
@@ -73,29 +55,19 @@
 import challengeService from "../services/challenge.service";
 import {useStore} from '../stores/store'
 import {ref} from 'vue'
-
-const success = ref(false)
+import ProveChallengeModal from '../components/ProveChallengeModal.vue'
 const store = useStore()
 const pendingChallenges = ref([])
 const acceptedChallenges = ref([])
+const success = ref(false)
 
-const completeChallenge = async () => {
-  try {
-    // const res = await challengeService.completeChallenge()
-    // if (res.status == 200) {
-    //   success.value = true
-    //   getAcceptedChallenges()
-    // }
-    success.value = true
-        setTimeout(() => {
-      success.value = false;
-    }, 2500);
-
-  } catch (error) {
-    console.log(error)
-  }
+const uploadedSucessfully = () => {
+  success.value = true
+  setTimeout(() => {
+    success.value = false
+  }, 2500);
+  getAcceptedChallenges()
 }
-
 const getAcceptedChallenges = async () => {
   try {
     const res = await challengeService.getAcceptedChallenges(store.user.id)
