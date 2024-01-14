@@ -13,10 +13,11 @@ from src.db_models.users import UserTable
 from src.api_models.challenge_accepted import *
 from src.db.session import get_db
 from src.chatgpt.api_call import check_user_challenge_for_legal
+import uuid
 
 router = APIRouter(tags=["Challenges"])
 
-ALLOWED_EXTENSIONS = ["mp4", "png", "jpeg", "jpg", "gif"]
+ALLOWED_EXTENSIONS = ["mp4", "png", "jpeg", "jpg"]
 
 @router.post("/challenges")
 async def add_challenge(
@@ -50,7 +51,7 @@ async def add_challenge(
         description = challenge.description,
         reward=challenge.reward,
         challenge_resources="/",
-        prove_resource="/",
+        prove_resource="",
         status=ChallengeStatus.PENDING,
         hashtags=list_hashtags
     )
@@ -64,16 +65,18 @@ async def add_challenge(
 
 @router.get("/challenges")
 async def get_challenges(
+        user_id: int,
         db: Session = Depends(get_db)
      )-> List[Challenge]:
 
     challenges_entries = db.exec(select(ChallengeTable)).all()
-    challenges = map_challenge_list(challenges_entries, db)
+    challenges = map_challenge_list(user_id, challenges_entries, db)
 
     return challenges
 
 
 def map_challenge_list(
+            logged_in_user_id: int,
             challenges_entries: List[ChallengeTable],
             db: Session
         ) -> List[Challenge]:
@@ -82,7 +85,12 @@ def map_challenge_list(
 
         for challenge in challenges_entries:
             user = db.exec(select(UserTable).where(UserTable.id== challenge.sender_user_id)).first()
-            comments = db.exec(select(TextReactionTable).where(TextReactionTable.challenge_id == challenge.id)).all()
+            comments = db.exec(select(TextReactionTable).where(TextReactionTable.challenge_id == challenge.sender_user_id)).all()
+            likes_count = len(db.exec(select(LikesTable).where(LikesTable.challenge_id == challenge.id  , LikesTable.state == True)).all())
+            has_liked = db.exec(select(LikesTable.state).where(LikesTable.challenge_id == challenge.id, LikesTable.user_id == logged_in_user_id)).first()
+            if has_liked == None:
+                has_liked = False
+            likes = LikeChallengeResponse(likes_count=likes_count, has_liked=has_liked)
             receiver_name = db.exec(select(UserTable).where(UserTable.id == challenge.receiver_user_id)).first().username
             challenge_obj = Challenge(
                 id=challenge.id,
@@ -95,6 +103,7 @@ def map_challenge_list(
                 done_date=challenge.done_date,
                 hashtags=challenge.hashtags,
                 comments=comments,
+                likes=likes,
                 reward=challenge.reward
             )
 
@@ -110,19 +119,20 @@ async def get_pending_challenges(
     ) -> List[Challenge]:
 
     challenges_entries = db.exec(select(ChallengeTable).where(ChallengeTable.status == ChallengeStatus.PENDING, ChallengeTable.receiver_user_id == userId)).all()
-    challenges = map_challenge_list(challenges_entries, db)
+    challenges = map_challenge_list(userId, challenges_entries, db)
 
     return challenges 
 
 
 @router.get("/challenges/{userId}/done")
-async def get_pending_challenges(
+async def get_done_challenges(
         userId: str,
+        logged_in_user_id: int,
         db: Session = Depends(get_db)
     ) -> List[Challenge]:
 
     challenges_entries = db.exec(select(ChallengeTable).where(ChallengeTable.status == ChallengeStatus.DONE, ChallengeTable.receiver_user_id == userId)).all()
-    challenges = map_challenge_list(challenges_entries, db)
+    challenges = map_challenge_list(logged_in_user_id, challenges_entries, db)
     return challenges
 
 
@@ -133,7 +143,7 @@ async def get_accepted_challenges(
     ) -> List[Challenge]:
 
     challenges_entries = db.exec(select(ChallengeTable).where(ChallengeTable.status == ChallengeStatus.ACCEPTED, ChallengeTable.receiver_user_id == userId)).all()
-    challenges = map_challenge_list(challenges_entries, db)
+    challenges = map_challenge_list(userId, challenges_entries, db)
     return challenges
 
 
@@ -166,21 +176,6 @@ async def accept_challenge(
     db.add(challenge)
     db.commit()
 
-# Test Endpoint - TODO Delete this
-@router.put("/challenges/{challenge_id}/done1")
-async def complete_challenge_image(
-        image: UploadFile
-    ):
-      if image:
-        file_extension = image.filename.split(".")[-1].lower()
-        if file_extension not in ALLOWED_EXTENSIONS:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid file format. Allowed formats: mp4, png, jpeg, jpg, gif")
-    
-        file_path = os.path.join("/backend/resources", image.filename)
-        with open(file_path, "wb") as f:
-            f.write(image.file.read())
-        return file_path 
-      return "Kein File"
 
 @router.get("/challenges/ListDir")
 async def complete_challenge_image(
@@ -190,22 +185,25 @@ async def complete_challenge_image(
 
 @router.put("/challenges/{challenge_id}/done")
 async def complete_challenge(
-        challengeCompleted: ChallengeCompleted,
+        challenge_id: int,
+        image: UploadFile,
         db: Session = Depends(get_db)
     ):
-    challenge = db.exec(select(ChallengeTable).where(ChallengeTable.id == challengeCompleted.challenge_id)).first()
+    challenge = db.exec(select(ChallengeTable).where(ChallengeTable.id == challenge_id)).first()
     challenge.status = ChallengeStatus.DONE
     challenge.done_date = datetime.now()
     
-    if challengeCompleted.file:
-        file_extension = challengeCompleted.file.filename.split(".")[-1].lower()
+    if image:
+        file_extension = image.filename.split(".")[-1].lower()
         if file_extension not in ALLOWED_EXTENSIONS:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid file format. Allowed formats: mp4, png, jpeg, jpg, gif")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid file format. Allowed formats: mp4, png, jpeg, jpg")
+
+        unique_filename = f"{uuid.uuid4().hex}.{file_extension}"
+        file_path = os.path.join("/backend/resources", unique_filename)
     
-        file_path = os.path.join("/backend/resources", challengeCompleted.file.filename)
         with open(file_path, "wb") as f:
-            f.write(challengeCompleted.file.file.read())
-        challenge.prove_resource = challengeCompleted.file.filename  
+            f.write(image.file.read())
+        challenge.prove_resource = unique_filename  
     
     db.add(challenge)
     db.commit()
@@ -225,12 +223,13 @@ async def decline_challenge(
 
 @router.get("/challenges/{hashtag}")
 async def get_challenges_by_hashtag(
+        userId: int,
         hashtag: str,
         db: Session = Depends(get_db)
     ) -> List[Challenge]:
 
     hashtag_entry = db.exec(select(HashtagTable).where(HashtagTable.text == hashtag)).first()
-    challenges = map_challenge_list(hashtag_entry.challenges, db)
+    challenges = map_challenge_list(userId, hashtag_entry.challenges, db)
     return challenges
 
     
@@ -238,11 +237,12 @@ async def get_challenges_by_hashtag(
 @router.get("/challenges/latest/{limit}")
 async def get_latest_challenges(
         limit: int,
+        userId: int,
         db: Session = Depends(get_db)
     ) -> List[Challenge]:
     
     latest_entires = db.exec(select(ChallengeTable).order_by(desc(ChallengeTable.done_date)).where(ChallengeTable.status == ChallengeStatus.DONE).limit(limit)).all()
-    challenges = map_challenge_list(latest_entires, db)
+    challenges = map_challenge_list(userId, latest_entires, db)
     return challenges
 
 

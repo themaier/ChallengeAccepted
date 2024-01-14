@@ -35,24 +35,32 @@ class ChallengeService {
         })
     }
 
-    async getCompletedChallengesByUser(id) {
-        return await axios.get(API_URL + id + '/done').then(response => {
+    async getCompletedChallengesByUser(id, userId) {
+        return await axios.get(API_URL + id + '/done?logged_in_user_id=' + userId).then(response => {
             return response
         })
     }
 
-    async getCompletedChallengesByTag(hashtag) {
-        return await axios.get(API_URL + hashtag).then(response => {
+    async getCompletedChallengesByTag(hashtag, id) {
+        return await axios.get(API_URL + hashtag + '?userId=' + id).then(response => {
             return response
         })
     }
 
-    async getTrendingChallenges() {
-        return await axios.get(API_URL + 'latest/' + 10).then(response => {
+    async getTrendingChallenges(id) {
+        return await axios.get(API_URL + 'latest/' + 10 + '?userId=' + id).then(response => {
             return response
         })
     }
 
+    async likeChallenge(challengeId, userId) {
+        return await axios.put(API_URL + challengeId + '/like', {
+            user_id: userId,
+            challenge_id: challengeId
+        }).then(response => {
+            return response
+        })
+    }
 };
 
 export default new ChallengeService();

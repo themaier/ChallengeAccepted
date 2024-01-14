@@ -5,7 +5,9 @@ from src.db_models.text_reaction import TextReactionTable
 from src.db_models.hashtags import HashtagTable
 from datetime import datetime
 
-
+class LikeChallengeResponse(BaseModel):
+    has_liked: bool
+    likes_count: int
 
 class Challenge(BaseModel):
     id: int
@@ -19,11 +21,13 @@ class Challenge(BaseModel):
     reward: Optional[str]
     comments: Optional[List[TextReactionTable]]
     hashtags: List[HashtagTable]
+    likes: LikeChallengeResponse
 
 
 class LikeChallengeRequest(BaseModel):
     user_id: int
     challenge_id: int
+
 
 
 class Comment(BaseModel):
@@ -44,7 +48,7 @@ class ChallengeForm(BaseModel):
 
 class ChallengeCompleted(BaseModel):
     challenge_id: int
-    file: Optional[UploadFile] = File(None),
+    file: UploadFile
 
 
 class Friend(BaseModel):
