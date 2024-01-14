@@ -13,14 +13,17 @@
                         <RouterLink :to="{ name: 'friendProfile', params: { id: challenge.receiver_id } }" class="col-lg-2 link-dark fw-bold link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover">{{ challenge.receiver_name }}</RouterLink>
                         <span>{{formatDate(challenge.done_date)}}</span>
                     </div>
-                    <img class="rounded" style="max-height:900px;" :src="IMG_URL + challenge.prove_resource_path">
+                    <img v-if="!store.isVideo(challenge.prove_resource_path)" class="rounded" style="max-height:900px;" :src="IMG_URL + challenge.prove_resource_path">
+                    <video v-else class="rounded" style="max-height:900px;" controls>
+                        <source :src="IMG_URL + challenge.prove_resource_path" type="video/mp4">
+                    </video>
                     <div class=" px-1 py-2">
                         <LikeButton :challenge="challenge"></LikeButton>
                         <button class="btn icon icon--comment icon--size-1-5 icon--button" data-bs-toggle="modal" :data-bs-target="'#comment'+ challenge.id">{{challenge.comments.length}}</button>
                     </div>
                     <div class="px-2 fw-bold">{{ challenge.title }}</div>
                     <div class="px-2">{{ challenge.description }}</div>
-                    <div class="px-2">Reward: {{ challenge.reward }}</div>
+                    <div v-if="challenge.reward" class="px-2">Reward: {{ challenge.reward }}</div>
                     <div v-if="challenge.hashtags" class="px-2"><a v-for="hashtag in challenge.hashtags" :href="'?hashtag='+ hashtag.text" :key="hashtag.id" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">#{{hashtag.text}}</a></div>
                 </div>
             </div>

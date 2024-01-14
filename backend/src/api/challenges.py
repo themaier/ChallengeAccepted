@@ -142,7 +142,7 @@ async def get_done_challenges(
         db: Session = Depends(get_db)
     ) -> List[Challenge]:
 
-    challenges_entries = db.exec(select(ChallengeTable).where(ChallengeTable.status == ChallengeStatus.DONE, ChallengeTable.receiver_user_id == userId)).all()
+    challenges_entries = db.exec(select(ChallengeTable).order_by(desc(ChallengeTable.done_date)).where(ChallengeTable.status == ChallengeStatus.DONE, ChallengeTable.receiver_user_id == userId)).all()
     challenges = map_challenge_list(logged_in_user_id, challenges_entries, db)
     return challenges
 
@@ -254,7 +254,8 @@ async def get_challenges_by_hashtag(
     ) -> List[Challenge]:
 
     hashtag_entry = db.exec(select(HashtagTable).where(HashtagTable.text == hashtag)).first()
-    challenges = map_challenge_list(userId, hashtag_entry.challenges, db)
+    sorted_entries = sorted(hashtag_entry.challenges, key=lambda x: x.done_date, reverse=True)
+    challenges = map_challenge_list(userId, sorted_entries, db)
     return challenges
 
     
