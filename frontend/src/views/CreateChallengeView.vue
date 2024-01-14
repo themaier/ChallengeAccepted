@@ -45,7 +45,7 @@
               <input type="checkbox" id="chatgpt_check" v-model="challenge.chatgpt_check">
               <label for="checkbox">Legal check mit ChatGPT</label>
             </div>
-            <button type="submit" class="btn btn-primary" style="text-align: center" @click="createChallenge()">Freund herausfordern</button>
+            <button type="submit" class="btn btn-primary" style="text-align: center">Freund herausfordern</button>
             <div v-if="errorMessage != ''" class="mt-1 text-danger">{{errorMessage}}</div>
             <div v-if="successMessage != ''" class="mt-1 text-success">{{successMessage}}</div>
             <div v-if="challenge.chatgpt_check">
@@ -101,7 +101,6 @@ const createChallenge = async () => {
       errorMessage.value = ''
       successMessage.value = "Challenge wurde erfolgreich erstellt."
       challenge.value = ''
-      friends.value = ''
     }
   } catch (error) { 
     successMessage.value = ''
@@ -132,5 +131,3 @@ const getFriends = async () => {
 getFriends()
 
 </script>
-
-

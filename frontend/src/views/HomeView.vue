@@ -45,17 +45,28 @@
                     <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form @submit.prevent="completeChallenge()">
                       <div class="mb-3">
                         <label for="formFile" class="form-label">Foto oder Video hochladen</label>
                         <input class="form-control" id="formFile" type="file" name="image" accept="image/png, image/jpg, image/jpeg, video/mp4" capture="user">
                       </div>
-                      <button class="btn btn-primary">Senden</button>
+                      <button class="btn btn-primary" >Senden</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+
+    <div v-if="success" class="animation">
+      <div class="firework"></div>
+      <div class="firework"></div>
+      <div class="firework"></div>
+      <div class="success-animation">
+        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" /><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" /></svg>
+      </div>
+    </div>
+
 </template>
 
 <script setup>
@@ -63,10 +74,27 @@ import challengeService from "../services/challenge.service";
 import {useStore} from '../stores/store'
 import {ref} from 'vue'
 
+const success = ref(false)
 const store = useStore()
 const pendingChallenges = ref([])
 const acceptedChallenges = ref([])
-console.log(acceptedChallenges.value)
+
+const completeChallenge = async () => {
+  try {
+    // const res = await challengeService.completeChallenge()
+    // if (res.status == 200) {
+    //   success.value = true
+    //   getAcceptedChallenges()
+    // }
+    success.value = true
+        setTimeout(() => {
+      success.value = false;
+    }, 2500);
+
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 const getAcceptedChallenges = async () => {
   try {
