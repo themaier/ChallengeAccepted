@@ -8,12 +8,12 @@
         <div class=" p-3 rounded">
             <h2 >{{title}}</h2>
             <div class="d-flex flex-column align-items-center gap-3">
-                <div v-for="challenge in challenges" :key="challenge" class="d-flex rounded bg-body flex-column w-100 py-2" style="max-width: 470px; max-height: 600px">
+                <div v-for="challenge in challenges" :key="challenge" class="d-flex rounded bg-body flex-column w-100 py-2 u--overflow-hidden" style="max-width: 470px;">
                     <div class="px-2 mb-2 d-flex justify-content-between">
                         <RouterLink :to="{ name: 'friendProfile', params: { id: challenge.receiver_id } }" class="col-lg-2 link-dark fw-bold link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover">{{ challenge.receiver_name }}</RouterLink>
                         <span>{{formatDate(challenge.done_date)}}</span>
                     </div>
-                    <img class="rounded" style="max-height:600px" :src="challenge.prove_resource_path">
+                    <img class="rounded" style="max-height:900px;" :src="IMG_URL + challenge.prove_resource_path">
                     <div class=" px-1 py-2">
                         <LikeButton :challenge="challenge"></LikeButton>
                         <button class="btn icon icon--comment icon--size-1-5 icon--button" data-bs-toggle="modal" :data-bs-target="'#comment'+ challenge.id">{{challenge.comments.length}}</button>
@@ -26,7 +26,7 @@
             </div>
         </div>
     </div>
-<CommentSection :challenges="challenges"></CommentSection>
+<CommentSection :challenges="challenges" @commentedSucessfully="commentedSucessfully()"></CommentSection>
 
 </template>
 
@@ -37,11 +37,17 @@ import CommentSection from '../components/CommentSection.vue'
 import {useRoute} from 'vue-router'
 import LikeButton from '../components/LikeButton.vue'
 import {useStore} from '../stores/store'
+const ipv4 = import.meta.env.VITE_IPV4 || 'localhost';
+const IMG_URL = `http://${ipv4}:8000/resources/`
 const store = useStore()
 const route = useRoute()
 const challenges = ref([])
 const hashtagSearch = ref('')
 const title = ref('')
+
+const commentedSucessfully = () => {
+  searchChallenge()
+}
 
 const formatDate = (dateString) => {
   const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -80,22 +86,6 @@ const getChallengesByTag = async (tag) => {
     } catch (error) {
         challenges.value = []
         title.value = 'Keine Challenges für diesen Hashtag gefunden'
-    }
-}
-
-const likeChallenge = async (challenge) => {
-    try {
-        const response = await challengeService.likeChallenge(challenge.id, store.user.id)
-        if (response.status == 200) {
-            challenge.likes.has_liked = !challenge.likes.has_liked
-            if(challenge.likes.has_liked) {
-                challenge.likes.likes_count = challenge.likes.likes_count + 1
-            } else {
-                challenge.likes.likes_count = challenge.likes.likes_count - 1
-            }
-        }
-    } catch (error) {
-        console.log(error)
     }
 }
 

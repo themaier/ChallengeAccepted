@@ -61,6 +61,37 @@ class ChallengeService {
             return response
         })
     }
+
+    async completeChallenge(challengeId, image) {
+        const formData = new FormData();
+        formData.append('image', image);
+        
+        return await axios.put(`${API_URL}${challengeId}/done`, formData, {
+            headers: {
+            'Content-Type': 'multipart/form-data',
+            },
+        }).then(response => {
+            return response
+        })
+    }
+
+    async addComment(challengeId, userId, comment, image) {
+        const formData = new FormData();
+        if(image != null) {
+            formData.append('image', image);
+        }
+        if(comment != null && comment != "") {
+            formData.append('comment_text', comment);
+        };
+        formData.append('user_id', userId);
+        return await axios.put(`${API_URL}${challengeId}/comment`, formData, {
+            headers: {
+            'Content-Type': 'multipart/form-data',
+            },
+        }).then(response => {
+            return response
+        })
+    }
 };
 
 export default new ChallengeService();
