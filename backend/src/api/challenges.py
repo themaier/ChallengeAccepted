@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 from typing import List
-from sqlalchemy import desc
+from sqlalchemy import desc, or_
 from sqlmodel import Session, select
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks, Form
 from src.db_models.likes import LikesTable
@@ -194,12 +194,16 @@ async def get_pending_challenges(
 
 @router.get("/challenges/{userId}/done")
 async def get_done_challenges(
-        userId: str,
-        logged_in_user_id: int,
-        db: Session = Depends(get_db)
-    ) -> List[Challenge]:
-
-    challenges_entries = db.exec(select(ChallengeTable).order_by(desc(ChallengeTable.done_date)).where(ChallengeTable.status == ChallengeStatus.DONE, ChallengeTable.receiver_user_id == userId)).all()
+    userId: str, logged_in_user_id: int, db: Session = Depends(get_db)
+) -> List[Challenge]:
+    challenges_entries = db.exec(
+        select(ChallengeTable)
+        .order_by(desc(ChallengeTable.done_date))
+        .where(
+            ChallengeTable.status == ChallengeStatus.DONE,
+            ChallengeTable.receiver_user_id == userId,
+        )
+    ).all()
     challenges = map_challenge_list(logged_in_user_id, challenges_entries, db)
     return challenges
 
@@ -216,6 +220,35 @@ async def get_accepted_challenges(
     ).all()
     challenges = map_challenge_list(userId, challenges_entries, db)
     return challenges
+
+
+@router.get("/challenges/{userId}/created")
+async def get_created_challenges(
+    userId: int, db: Session = Depends(get_db)
+) -> List[CreatedChallenges]:
+    challenge_entries: List[ChallengeTable] = db.exec(
+        select(ChallengeTable).where(
+            or_(
+                ChallengeTable.status == ChallengeStatus.ACCEPTED,
+                ChallengeTable.status == ChallengeStatus.PENDING,
+            ),
+            ChallengeTable.sender_user_id == userId,
+        )
+    ).all()
+    created_challenges = []
+    for challenge_entry in challenge_entries:
+        receiver_user = db.exec(
+            select(UserTable).where(UserTable.id == challenge_entry.receiver_user_id)
+        ).first()
+        created_challenges.append(
+            CreatedChallenges(
+                receiver_user_name=receiver_user.username,
+                title=challenge_entry.title,
+                description=challenge_entry.description,
+                status=challenge_entry.status,
+            )
+        )
+    return created_challenges
 
 
 @router.put("/challenges/{challenge_id}/comment")
@@ -309,13 +342,14 @@ async def decline_challenge(challenge_id: int, db: Session = Depends(get_db)):
 
 @router.get("/challenges/{hashtag}")
 async def get_challenges_by_hashtag(
-        userId: int,
-        hashtag: str,
-        db: Session = Depends(get_db)
-    ) -> List[Challenge]:
-
-    hashtag_entry = db.exec(select(HashtagTable).where(HashtagTable.text == hashtag)).first()
-    sorted_entries = sorted(hashtag_entry.challenges, key=lambda x: x.done_date, reverse=True)
+    userId: int, hashtag: str, db: Session = Depends(get_db)
+) -> List[Challenge]:
+    hashtag_entry = db.exec(
+        select(HashtagTable).where(HashtagTable.text == hashtag)
+    ).first()
+    sorted_entries = sorted(
+        hashtag_entry.challenges, key=lambda x: x.done_date, reverse=True
+    )
     challenges = map_challenge_list(userId, sorted_entries, db)
     return challenges
 

@@ -22,6 +22,12 @@ class ChallengeService {
             return response
         })
     }
+    
+    async getCreatedChallenges(id) {
+        return await axios.get(API_URL + id + '/created').then(response => {
+            return response
+        })
+    }
 
     async acceptChallenge(id) {
         return await axios.put(API_URL + id + '/accept').then(response => {
