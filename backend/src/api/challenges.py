@@ -6,7 +6,7 @@ from sqlmodel import Session, select
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks, Form
 from src.db_models.likes import LikesTable
 from src.utils.error import raise_404
-from src.db_models.challenges import ChallengeTable, ChallengeStatus
+from src.db_models.challenges import ChallengeTable, ChallengeStatus, ChallengeStatus
 from src.db_models.hashtag_challenge import HashtagChallengeTable
 from src.db_models.text_reaction import TextReactionTable
 from src.db_models.users import UserTable
@@ -28,6 +28,23 @@ async def add_challenge(
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
 ):
+    challenges_per_user = db.exec(
+        select(ChallengeTable).where(
+            ChallengeTable.receiver_user_id == challenge.friend_id
+        )
+    ).all()
+    number_of_active_challenges = 0
+    for challenge_per_user in challenges_per_user:
+        if challenge_per_user.status in (
+            ChallengeStatus.PENDING,
+            ChallengeStatus.ACCEPTED,
+        ):
+            number_of_active_challenges += 1
+    if number_of_active_challenges >= 5:
+        raise HTTPException(
+            status_code=406, detail="Friend has already 5 pending challenges."
+        )
+
     if challenge.chatgpt_check:
         answer = check_user_challenge_for_legal(challenge.description)
         if answer == "illegal":
