@@ -88,6 +88,19 @@ const challenge = ref({
 
 const friends = ref('')
 
+function resetChallenge() {
+  challenge.value = {
+    user_id: store.user.id,
+    challenge_name: '',
+    friend_id: null,
+    description: '',
+    hashtags_list: null,
+    reward: null,
+    chatgpt_check: false,
+    email_check: false,
+  };
+}
+
 const createChallenge = async () => {
   try {
     needsValidation.value = true
@@ -105,13 +118,22 @@ const createChallenge = async () => {
       needsValidation.value = false
       errorMessage.value = ''
       successMessage.value = "Challenge wurde erfolgreich erstellt."
-      challenge.value = ''
+      challenge.value = {
+        user_id: store.user.id,
+        challenge_name: '',
+        friend_id: null,
+        description: '',
+        hashtags_list: null,
+        reward: null,
+        chatgpt_check: false,
+        email_check: false,
+      };
     }
   } catch (error) { 
     successMessage.value = ''
     errorMessage.value = ''
     if (error.response && error.response.status === 406) {
-      errorMessage.value= "Diese Challenge ist nicht erlaubt."
+      errorMessage.value= error.response.data.detail
     } else {
         errorMessage.value="Challenge erstellen hat nicht funktioniert. Bitte versuche es später erneut."
     }
