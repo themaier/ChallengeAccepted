@@ -3,7 +3,7 @@ import os
 from typing import List
 from sqlalchemy import desc
 from sqlmodel import Session, select
-from fastapi import APIRouter, Depends, Query, HTTPException, Response, status
+from fastapi import APIRouter, Depends, Query, HTTPException, Response, status, Form
 from src.db_models.likes import LikesTable
 from src.utils.error import raise_404
 from src.db_models.challenges import ChallengeTable, ChallengeStatus
@@ -85,7 +85,18 @@ def map_challenge_list(
 
         for challenge in challenges_entries:
             user = db.exec(select(UserTable).where(UserTable.id== challenge.sender_user_id)).first()
-            comments = db.exec(select(TextReactionTable).where(TextReactionTable.challenge_id == challenge.sender_user_id)).all()
+            comments = []
+            for comment in db.exec(select(TextReactionTable).where(TextReactionTable.challenge_id == challenge.id)).all():
+                username = db.exec(select(UserTable).where(UserTable.id == comment.user_id)).first().username
+                comment_obj = Comment(
+                    id=comment.id,
+                    user_id=comment.user_id,
+                    challenge_id=comment.challenge_id,
+                    username=username,
+                    text=comment.text,
+                    image_path=comment.image_path
+                )
+                comments.append(comment_obj)
             likes_count = len(db.exec(select(LikesTable).where(LikesTable.challenge_id == challenge.id  , LikesTable.state == True)).all())
             has_liked = db.exec(select(LikesTable.state).where(LikesTable.challenge_id == challenge.id, LikesTable.user_id == logged_in_user_id)).first()
             if has_liked == None:
@@ -147,18 +158,32 @@ async def get_accepted_challenges(
     return challenges
 
 
-@router.put("/challenges/{id}/comment")
+@router.put("/challenges/{challenge_id}/comment")
 async def accept_challenge(
         challenge_id: int,
-        comment: Comment,
+        image: UploadFile = File(None),
+        user_id: int = Form(...),
+        comment_text: str = Form(None),
         db: Session = Depends(get_db)
     ):
     
     comment_entry = TextReactionTable()
-    comment_entry.user_id = comment.user_id
+    comment_entry.user_id = user_id
     comment_entry.challenge_id = challenge_id
-    comment_entry.text = comment.comment_text
-    comment_entry.image_path = comment.comment_image_path
+    if comment_text:
+        comment_entry.text = comment_text
+
+    if image:
+        file_extension = image.filename.split(".")[-1].lower()
+        if file_extension not in ALLOWED_EXTENSIONS:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid file format. Allowed formats: mp4, png, jpeg, jpg")
+
+        unique_filename = f"{uuid.uuid4().hex}.{file_extension}"
+        file_path = os.path.join("/backend/resources", unique_filename)
+    
+        with open(file_path, "wb") as f:
+            f.write(image.file.read())
+        comment_entry.image_path = unique_filename 
 
     db.add(comment_entry)
     db.commit()
