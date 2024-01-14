@@ -29,7 +29,7 @@
 import { ref } from 'vue'
 import challengeService from '../services/challenge.service.js'
 import {useStore} from '../stores/store'
-import CommentSection from '../components/CommentSectiom.vue'
+import CommentSection from '../components/CommentSection.vue'
 
 import { useRouter, useRoute } from 'vue-router'
 import userService from '../services/user.service.js'

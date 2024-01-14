@@ -33,7 +33,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import challengeService from '../services/challenge.service.js'
-import CommentSection from '../components/CommentSectiom.vue'
+import CommentSection from '../components/CommentSection.vue'
 import {useRoute} from 'vue-router'
 const route = useRoute()
 const like = ref(false)
