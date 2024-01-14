@@ -88,6 +88,19 @@ const challenge = ref({
 
 const friends = ref('')
 
+function resetChallenge() {
+  challenge.value = {
+    user_id: store.user.id,
+    challenge_name: '',
+    friend_id: null,
+    description: '',
+    hashtags_list: null,
+    reward: null,
+    chatgpt_check: false,
+    email_check: false,
+  };
+}
+
 const createChallenge = async () => {
   try {
     needsValidation.value = true
@@ -105,7 +118,16 @@ const createChallenge = async () => {
       needsValidation.value = false
       errorMessage.value = ''
       successMessage.value = "Challenge wurde erfolgreich erstellt."
-      challenge.value = ''
+      challenge.value = {
+        user_id: store.user.id,
+        challenge_name: '',
+        friend_id: null,
+        description: '',
+        hashtags_list: null,
+        reward: null,
+        chatgpt_check: false,
+        email_check: false,
+      };
     }
   } catch (error) { 
     successMessage.value = ''
