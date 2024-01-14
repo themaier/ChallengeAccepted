@@ -10,7 +10,7 @@
                     </div>
                     <img class="rounded" style="max-height:600px" :src="challenge.prove_resource_path">
                     <div class=" px-1 py-2">
-                        <button  @click="like = !like" :class="{ 'icon--love--filled': like }" class="btn icon icon--love icon--size-1-5 icon--button me-2">120</button>
+                        <LikeButton :challenge="challenge"></LikeButton>
                         <button class="btn icon icon--comment icon--size-1-5 icon--button" data-bs-toggle="modal" :data-bs-target="'#comment'+ challenge.id">{{challenge.comments.length}}</button>
                     </div>
                     <div class="px-2 fw-bold">{{ challenge.title }}</div>
@@ -30,8 +30,8 @@ import { ref } from 'vue'
 import challengeService from '../services/challenge.service.js'
 import {useStore} from '../stores/store'
 import CommentSection from '../components/CommentSection.vue'
+import LikeButton from '../components/LikeButton.vue'
 
-const like = ref(false)
 const store = useStore()
 const challenges = ref([])
 
@@ -44,7 +44,7 @@ const formatDate = (dateString) => {
 const getCompletedChallengesByUser = async (id) => {
 
     try {
-        const response = await challengeService.getCompletedChallengesByUser(id)
+        const response = await challengeService.getCompletedChallengesByUser(id, id)
         if (response.status == 200) {
             challenges.value = response.data
         }

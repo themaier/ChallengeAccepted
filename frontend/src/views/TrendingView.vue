@@ -15,7 +15,7 @@
                     </div>
                     <img class="rounded" style="max-height:600px" :src="challenge.prove_resource_path">
                     <div class=" px-1 py-2">
-                        <button  @click="like = !like" :class="{ 'icon--love--filled': like }" class="btn icon icon--love icon--size-1-5 icon--button me-2">120</button>
+                        <LikeButton :challenge="challenge"></LikeButton>
                         <button class="btn icon icon--comment icon--size-1-5 icon--button" data-bs-toggle="modal" :data-bs-target="'#comment'+ challenge.id">{{challenge.comments.length}}</button>
                     </div>
                     <div class="px-2 fw-bold">{{ challenge.title }}</div>
@@ -31,12 +31,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import challengeService from '../services/challenge.service.js'
 import CommentSection from '../components/CommentSection.vue'
 import {useRoute} from 'vue-router'
+import LikeButton from '../components/LikeButton.vue'
+import {useStore} from '../stores/store'
+const store = useStore()
 const route = useRoute()
-const like = ref(false)
 const challenges = ref([])
 const hashtagSearch = ref('')
 const title = ref('')
@@ -57,7 +59,7 @@ const searchChallenge = async () => {
 
 const getTrendingChallenges = async () => {
     try {
-        const response = await challengeService.getTrendingChallenges()
+        const response = await challengeService.getTrendingChallenges(store.user.id)
         if (response.status == 200) {
             challenges.value = response.data
             title.value = 'Neuesten 10 Challenges'
@@ -69,7 +71,7 @@ const getTrendingChallenges = async () => {
 
 const getChallengesByTag = async (tag) => {
     try {
-        const response = await challengeService.getCompletedChallengesByTag(tag)
+        const response = await challengeService.getCompletedChallengesByTag(tag, store.user.id)
         hashtagSearch.value = tag
         if (response.status == 200) {
             title.value = '#' + tag
@@ -78,6 +80,22 @@ const getChallengesByTag = async (tag) => {
     } catch (error) {
         challenges.value = []
         title.value = 'Keine Challenges für diesen Hashtag gefunden'
+    }
+}
+
+const likeChallenge = async (challenge) => {
+    try {
+        const response = await challengeService.likeChallenge(challenge.id, store.user.id)
+        if (response.status == 200) {
+            challenge.likes.has_liked = !challenge.likes.has_liked
+            if(challenge.likes.has_liked) {
+                challenge.likes.likes_count = challenge.likes.likes_count + 1
+            } else {
+                challenge.likes.likes_count = challenge.likes.likes_count - 1
+            }
+        }
+    } catch (error) {
+        console.log(error)
     }
 }
 
