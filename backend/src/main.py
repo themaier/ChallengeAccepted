@@ -29,7 +29,6 @@ def app() -> FastAPI:
     # app.add_1vent_handler("startup", tasks.create_start_app_handler(app))
     # app.add_event_handler("shutdown", tasks.create_stop_app_handler(app))
 
-    # app.mount("/resources", StaticFiles(directory="/backend/resources"), name="resources")
     if not os.path.exists("../backend/resources"):
         os.makedirs("../backend/resources")
     
