@@ -41,8 +41,3 @@ def check_user_challenge_for_legal(challenge_text: str) -> GPTAnswers:
     if answer not in ("legal", "illegal"):
         answer = get_answer()
     return answer
-
-
-challenge_text = "Kick someones balls."
-print(challenge_text)
-print(check_user_challenge_for_legal(challenge_text))
