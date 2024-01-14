@@ -7,7 +7,6 @@ from src.api.users import router as user_router
 from src.api.friends import router as friends_router
 from src.api.challenges import router as challenge_router
 from src.api.hashtags import router as hashtags_router
-from src.api.email import router as email_router
 import os
 
 
@@ -37,7 +36,6 @@ def app() -> FastAPI:
     app.include_router(challenge_router)
     app.include_router(friends_router)
     app.include_router(hashtags_router)
-    app.include_router(email_router)
 
     app.mount(
         "/resources", StaticFiles(directory="../backend/resources"), name="resources"
