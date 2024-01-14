@@ -5,9 +5,11 @@ from src.db_models.text_reaction import TextReactionTable
 from src.db_models.hashtags import HashtagTable
 from datetime import datetime
 
+
 class LikeChallengeResponse(BaseModel):
     has_liked: bool
     likes_count: int
+
 
 class Comment(BaseModel):
     id: Optional[int]
@@ -16,6 +18,7 @@ class Comment(BaseModel):
     username: str
     text: Optional[str]
     image_path: Optional[str]
+
 
 class Challenge(BaseModel):
     id: int
@@ -31,9 +34,11 @@ class Challenge(BaseModel):
     hashtags: List[HashtagTable]
     likes: LikeChallengeResponse
 
+
 class LikeChallengeRequest(BaseModel):
     user_id: int
     challenge_id: int
+
 
 class ChallengeForm(BaseModel):
     user_id: int
@@ -43,6 +48,7 @@ class ChallengeForm(BaseModel):
     hashtags_list: Optional[str]
     reward: Optional[str]
     chatgpt_check: bool = Field(default=False)
+    email_check: bool = Field(default=False)
 
 
 class ChallengeCompleted(BaseModel):
