@@ -1,8 +1,10 @@
 from datetime import datetime
+import os
 from typing import List
 from sqlalchemy import desc
 from sqlmodel import Session, select
 from fastapi import APIRouter, Depends, Query, HTTPException, Response, status
+from src.db_models.likes import LikesTable
 from src.utils.error import raise_404
 from src.db_models.challenges import ChallengeTable, ChallengeStatus
 from src.db_models.hashtag_challenge import HashtagChallengeTable
@@ -14,6 +16,7 @@ from src.chatgpt.api_call import check_user_challenge_for_legal
 
 router = APIRouter(tags=["Challenges"])
 
+ALLOWED_EXTENSIONS = ["mp4", "png", "jpeg", "jpg", "gif"]
 
 @router.post("/challenges")
 async def add_challenge(
@@ -55,22 +58,6 @@ async def add_challenge(
     db.add(challenge_entry)
     db.commit()
     
-    # if(challenge.hashtags_list):
-    #     hashtags = challenge.hashtags_list.split(",")
-        
-    #     for hashtag in hashtags:
-    #         hashtag_entry = HashtagTable()
-    #         hashtag_entry.challenge_id = challenge_entry.id
-    #         hashtag_entry.text = hashtag
-    #         db.add(hashtag_entry)
-    #     db.commit()
-
-    #     linktable_entry = HashtagChallengeTable(
-    #         challenge_id=challenge_entry.id,
-    #         hashtag_id=hashtag_entry.id
-    #     )
-    #     db.add(linktable_entry)
-        # db.commit()
     return 
     
 
@@ -179,6 +166,27 @@ async def accept_challenge(
     db.add(challenge)
     db.commit()
 
+# Test Endpoint - TODO Delete this
+@router.put("/challenges/{challenge_id}/done1")
+async def complete_challenge_image(
+        image: UploadFile
+    ):
+      if image:
+        file_extension = image.filename.split(".")[-1].lower()
+        if file_extension not in ALLOWED_EXTENSIONS:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid file format. Allowed formats: mp4, png, jpeg, jpg, gif")
+    
+        file_path = os.path.join("/backend/resources", image.filename)
+        with open(file_path, "wb") as f:
+            f.write(image.file.read())
+        return file_path 
+      return "Kein File"
+
+@router.get("/challenges/ListDir")
+async def complete_challenge_image(
+    ):
+      return os.listdir("resources")
+
 
 @router.put("/challenges/{challenge_id}/done")
 async def complete_challenge(
@@ -188,7 +196,16 @@ async def complete_challenge(
     challenge = db.exec(select(ChallengeTable).where(ChallengeTable.id == challengeCompleted.challenge_id)).first()
     challenge.status = ChallengeStatus.DONE
     challenge.done_date = datetime.now()
-    challenge.prove_resource = challengeCompleted.file_path
+    
+    if challengeCompleted.file:
+        file_extension = challengeCompleted.file.filename.split(".")[-1].lower()
+        if file_extension not in ALLOWED_EXTENSIONS:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid file format. Allowed formats: mp4, png, jpeg, jpg, gif")
+    
+        file_path = os.path.join("/backend/resources", challengeCompleted.file.filename)
+        with open(file_path, "wb") as f:
+            f.write(challengeCompleted.file.file.read())
+        challenge.prove_resource = challengeCompleted.file.filename  
     
     db.add(challenge)
     db.commit()
@@ -229,5 +246,33 @@ async def get_latest_challenges(
     return challenges
 
 
-
+@router.put("/challenges/{challenge_id}/like")
+async def toggle_challenge_like(
+        request: LikeChallengeRequest,
+        db: Session = Depends(get_db)
+    ):
+    like_entry = db.exec(select(LikesTable).where(LikesTable.user_id == request.user_id, LikesTable.challenge_id == request.challenge_id)).first()
+    if like_entry:
+        like_entry.state = not like_entry.state
+        db.add(like_entry)
+        db.commit()
+    else:
+        like_entry = LikesTable(
+            user_id=request.user_id,
+            challenge_id=request.challenge_id,
+            state=True
+        )
+        db.add(like_entry)
+        db.commit()
+    
+@router.get("/challenges/{challenge_id}/like")
+async def get_likes(
+        challenge_id: int,
+        db: Session = Depends(get_db)
+    ) -> int:
+    liked_entries = db.exec(select(LikesTable).where(LikesTable.challenge_id == challenge_id, LikesTable.state == True)).all()
+    if liked_entries:
+        return len(liked_entries)
+    else:
+        return 0
 

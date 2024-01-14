@@ -1,3 +1,4 @@
+from fastapi import File, UploadFile
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from src.db_models.text_reaction import TextReactionTable
@@ -43,7 +44,7 @@ class ChallengeForm(BaseModel):
 
 class ChallengeCompleted(BaseModel):
     challenge_id: int
-    file_path: str
+    file: Optional[UploadFile] = File(None),
 
 
 class Friend(BaseModel):
