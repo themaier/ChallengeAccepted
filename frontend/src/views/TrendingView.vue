@@ -17,9 +17,11 @@
                     <video v-else class="rounded" style="max-height:900px;" controls>
                         <source :src="IMG_URL + challenge.prove_resource_path" type="video/mp4">
                     </video>
-                    <div class=" px-1 py-2">
+                    <div class=" px-1 py-2 d-flex">
                         <LikeButton :challenge="challenge"></LikeButton>
                         <button class="btn icon icon--comment icon--size-1-5 icon--button" data-bs-toggle="modal" :data-bs-target="'#comment'+ challenge.id">{{challenge.comments.length}}</button>
+                        <button class="btn icon icon--share icon--size-1-5 icon--button ms-auto" data-bs-toggle="modal" :data-bs-target="'#share'+ challenge.id"></button>
+                        <ShareSection :challenge="challenge"></ShareSection>
                     </div>
                     <div class="px-2 fw-bold">{{ challenge.title }}</div>
                     <div class="px-2">{{ challenge.description }}</div>
@@ -30,7 +32,6 @@
         </div>
     </div>
 <CommentSection :challenges="challenges" @commentedSucessfully="commentedSucessfully()"></CommentSection>
-
 </template>
 
 <script setup>
@@ -39,6 +40,7 @@ import challengeService from '../services/challenge.service.js'
 import CommentSection from '../components/CommentSection.vue'
 import {useRoute} from 'vue-router'
 import LikeButton from '../components/LikeButton.vue'
+import ShareSection from '../components/ShareSection.vue'
 import {useStore} from '../stores/store'
 const ipv4 = import.meta.env.VITE_IPV4 || 'localhost';
 const IMG_URL = `http://${ipv4}:8000/resources/`

@@ -9,3 +9,7 @@
 .icon--comment::before {
     mask-image: url('/icons/comment.svg');
 }
+
+.icon--share::before {
+    mask-image: url('/icons/send.svg');
+}

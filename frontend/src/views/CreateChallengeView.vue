@@ -41,17 +41,17 @@
                 <label for="reward">Reward (optional)</label>
                 <input type="text" class="form-control" id="reward" v-model="challenge.reward">
             </div>
-            <div>
-              <input type="checkbox" id="chatgpt_check" v-model="challenge.chatgpt_check">
-              <label for="checkbox">Legal check mit ChatGPT</label>
+            <div class="form-check mb-3">
+              <input type="checkbox" id="chatgpt_check" class="form-check-input" v-model="challenge.chatgpt_check">
+              <label for="checkbox" class="form-check-label">Legal check mit ChatGPT</label>
             </div>
-            <div>
-              <input type="checkbox" id="chatgpt_check" v-model="challenge.email_check">
-              <label for="checkbox">Email an Freund senden</label>
+            <div class="form-check mb-3">
+              <input type="checkbox" id="chatgpt_check" class="form-check-input" v-model="challenge.email_check">
+              <label for="checkbox" class="form-check-label">Email an Freund senden</label>
             </div>
             <button type="submit" class="btn btn-primary" style="text-align: center">Freund herausfordern</button>
-            <div v-if="errorMessage != ''" class="mt-1 text-danger">{{errorMessage}}</div>
-            <div v-if="successMessage != ''" class="mt-1 text-success">{{successMessage}}</div>
+            <div v-if="errorMessage != ''" class="mt-2 text-danger">{{errorMessage}}</div>
+            <div v-if="successMessage != ''" class="mt-2 text-success">{{successMessage}}</div>
             <div v-if="challenge.chatgpt_check">
               <!-- <br>
               <CheckoutItem />

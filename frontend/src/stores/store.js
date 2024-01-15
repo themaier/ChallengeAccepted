@@ -7,7 +7,6 @@ export const useStore = defineStore('store', () => {
   const isVideo = (resourcePath) => {
     const videoExtensions = ['mp4']; 
     const extension = resourcePath.toLowerCase().split('.').pop();
-    console.log(extension)
     return videoExtensions.includes(extension);
   }
 
