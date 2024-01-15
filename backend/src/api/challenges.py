@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 from typing import List
 from sqlalchemy import desc, or_
@@ -42,13 +42,13 @@ async def add_challenge(
             number_of_active_challenges += 1
     if number_of_active_challenges >= 5:
         raise HTTPException(
-            status_code=406, detail="Friend has already 5 pending challenges."
+            status_code=406, detail="Freund hat bereits 5 Challenges bzw. Anfragen."
         )
 
     if challenge.chatgpt_check:
         answer = check_user_challenge_for_legal(challenge.description)
         if answer == "illegal":
-            raise HTTPException(status_code=406, detail="Challenge is illegal.")
+            raise HTTPException(status_code=406, detail="Challenge ist illegal.")
 
     if challenge.email_check:
         sent_from_user = db.exec(
@@ -243,6 +243,9 @@ async def get_created_challenges(
         created_challenges.append(
             CreatedChallenges(
                 receiver_user_name=receiver_user.username,
+                receiver_user_id=receiver_user.id,
+                reward=challenge_entry.reward,
+                hashtags=challenge_entry.hashtags,
                 title=challenge_entry.title,
                 description=challenge_entry.description,
                 status=challenge_entry.status,
@@ -308,7 +311,8 @@ async def complete_challenge(
         select(ChallengeTable).where(ChallengeTable.id == challenge_id)
     ).first()
     challenge.status = ChallengeStatus.DONE
-    challenge.done_date = datetime.now()
+    time_offset = timedelta(hours=1)
+    challenge.done_date = datetime.utcnow() + time_offset
 
     if image:
         file_extension = image.filename.split(".")[-1].lower()
@@ -347,8 +351,9 @@ async def get_challenges_by_hashtag(
     hashtag_entry = db.exec(
         select(HashtagTable).where(HashtagTable.text == hashtag)
     ).first()
+    done_challenges = [challenge for challenge in hashtag_entry.challenges if challenge.status == ChallengeStatus.DONE]
     sorted_entries = sorted(
-        hashtag_entry.challenges, key=lambda x: x.done_date, reverse=True
+        done_challenges, key=lambda x: x.done_date, reverse=True
     )
     challenges = map_challenge_list(userId, sorted_entries, db)
     return challenges

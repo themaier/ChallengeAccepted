@@ -43,12 +43,22 @@ const user = ref({
 })
 const errorMessage = ref('')
 const needsValidation = ref(false)
+function isEmailValid(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
 const store = useStore()
 
 async function register(){
     needsValidation.value = true
     if (!user.value.username || !user.value.email || !user.value.password) {
+        errorMessage.value = "Bitte fülle alle Felder aus.";
         return
+    }
+
+    if (!isEmailValid(user.value.email)) {
+        errorMessage.value = "Bitte gib eine gültige E-Mail Adresse ein.";
+        return;
     }
     try {
         const response = await userService.register(user.value)

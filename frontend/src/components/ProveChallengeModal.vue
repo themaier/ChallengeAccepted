@@ -35,15 +35,14 @@ const onFileChanged = (e) => {
 
 const completeChallenge = async (id) => {
     try {
+        if(!file.value) return
         const res = await challengeService.completeChallenge(id, file.value)
         if (res.status == 200) {
+            file.value = null
+            document.querySelector('#formFile').value = null
             const myModalElement = modalRef.value[0]
             const bootstrapModal = Modal.getInstance(modalRef.value[0]);
             myModalElement.addEventListener('hidden.bs.modal', event => {
-                document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-                document.body.classList.remove('modal-open');
-                document.body.style.paddingRight = '';
-                document.body.style.overflow = '';
                 emit('uploadedSucessfully')
             })
             bootstrapModal.hide();

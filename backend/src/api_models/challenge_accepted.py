@@ -67,3 +67,6 @@ class CreatedChallenges(BaseModel):
     title: str
     description: str
     status: ChallengeStatus
+    reward: Optional[str]
+    hashtags: List[HashtagTable]
+    receiver_user_id: int
