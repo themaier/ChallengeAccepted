@@ -35,6 +35,7 @@
 import { ref } from 'vue'
 import userService from '../services/user.service.js'
 import router from '../router/index.js'
+import {useStore} from '../stores/store'
 const user = ref({
     username: '',
     email: '',
@@ -46,6 +47,7 @@ function isEmailValid(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
+const store = useStore()
 
 async function register(){
     needsValidation.value = true
@@ -60,9 +62,19 @@ async function register(){
     }
     try {
         const response = await userService.register(user.value)
-        
-        if (response == 200) {
-            router.push({name: 'signIn'});
+        if (response.status == 200) {
+            try {
+                const response = await userService.login(user.value)
+                if (response.status == 200) {
+                    router.push({name: 'home'});
+                    store.user = response.data
+                    localStorage.setItem('loggedIn', 'true');
+                    localStorage.setItem('user', JSON.stringify(response.data));
+                    store.loggedIn = true
+                }       
+            } catch(error) {
+                errorMessage.value = "Ein Fehler ist aufgetreten! Bitte versuche es später erneut."
+            }
         }       
     } catch(error) {
         errorMessage.value = "E-Mail oder Username existiert bereits!"
