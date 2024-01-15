@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from src.db_models.text_reaction import TextReactionTable
 from src.db_models.hashtags import HashtagTable
+from src.db_models.challenges import ChallengeStatus
 from datetime import datetime
 
 
@@ -59,3 +60,10 @@ class ChallengeCompleted(BaseModel):
 class Friend(BaseModel):
     user_id: int
     username: str
+
+
+class CreatedChallenges(BaseModel):
+    receiver_user_name: str
+    title: str
+    description: str
+    status: ChallengeStatus
