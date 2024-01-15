@@ -7,7 +7,7 @@ class UserService {
 
     async register(user) {
         return await axios.post(API_URL, user).then(response => {
-            return response.status
+            return response
         })
     }
 
