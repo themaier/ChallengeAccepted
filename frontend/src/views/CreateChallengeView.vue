@@ -71,7 +71,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        http://18.196.97.249:3000/registrieren?challengeId={{challengeId}}
+        http://{{ipv4}}:3000/registrieren?challengeId={{challengeId}}
       </div>
       <div class="modal-footer d-flex justify-content-center">
         <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="copyTextToClipboard()">Kopieren</button>
@@ -90,6 +90,7 @@ import friendshipService from "../services/friendship.service.js";
 import {useStore} from '../stores/store'
 import CheckoutPayment from '../components/CheckoutPayment.vue'
 import CheckoutItem from '../components/CheckoutItem.vue'
+const ipv4 = import.meta.env.VITE_IPV4 || 'localhost';
 const errorMessage = ref('')
 const successMessage = ref('')
 const needsValidation = ref(false)
@@ -166,7 +167,7 @@ const getFriends = async () => {
 }
 
 const copyTextToClipboard = () => {
-  navigator.clipboard.writeText('http://18.196.97.249:3000/registrieren?challengeId=' + challengeId.value).then(function() {
+  navigator.clipboard.writeText(`http://${ipv4}:3000/registrieren?challengeId=${challengeId.value}`).then(function() {
   }).catch(function(err) {
     console.error('Error in copying link: ', err);
   });

@@ -61,8 +61,9 @@ async def verify_login(
             select(ChallengeTable).where(ChallengeTable.id == user.challengeId)
         ).first()
         if existingChallenge and existingChallenge.status is ChallengeStatus.ASLINK:
-            existingChallenge.status = ChallengeStatus.PENDING
-            existingChallenge.receiver_user_id = existingUser.id
-            db.add(existingChallenge)
-            db.commit()
+            if existingChallenge.sender_user_id != existingUser.id:
+                existingChallenge.status = ChallengeStatus.PENDING
+                existingChallenge.receiver_user_id = existingUser.id
+                db.add(existingChallenge)
+                db.commit()
     return existingUser
