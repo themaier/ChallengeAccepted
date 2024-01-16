@@ -2,6 +2,8 @@ from typing import List
 from fastapi import APIRouter, Depends, Query, HTTPException, Response, status
 from src.utils.error import raise_404
 from src.db_models.users import UserTable
+from src.db_models.challenges import ChallengeTable, ChallengeStatus
+from src.api_models.users import UserVerify
 from src.db.session import get_db
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
@@ -42,17 +44,25 @@ async def post_new_users(
 
 @router.post("/users/verify")
 async def verify_login(
-    user: UserTable,
+    user: UserVerify,
     db: Session = Depends(get_db),
 ) -> UserTable:
     existingUser = db.exec(
         select(UserTable).where(UserTable.username == user.username)
     ).first()
-
     if existingUser is None or user.password != user.password:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password",
         )
 
+    if user.challengeId:
+        existingChallenge = db.exec(
+            select(ChallengeTable).where(ChallengeTable.id == user.challengeId)
+        ).first()
+        if existingChallenge and existingChallenge.status is ChallengeStatus.ASLINK:
+            existingChallenge.status = ChallengeStatus.PENDING
+            existingChallenge.receiver_user_id = existingUser.id
+            db.add(existingChallenge)
+            db.commit()
     return existingUser

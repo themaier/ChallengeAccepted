@@ -32,10 +32,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import userService from '../services/user.service.js'
 import router from '../router/index.js'
-import {useStore} from '../stores/store'
+import { useStore } from '../stores/store'
+import { useRoute } from 'vue-router';
+
 const user = ref({
     username: '',
     email: '',
@@ -48,7 +50,8 @@ function isEmailValid(email) {
   return emailRegex.test(email);
 }
 const store = useStore()
-
+const route = useRoute()
+store.challengeId = computed(() => route.query.challengeId).value
 async function register(){
     needsValidation.value = true
     if (!user.value.username || !user.value.email || !user.value.password) {
@@ -64,6 +67,9 @@ async function register(){
         const response = await userService.register(user.value)
         if (response.status == 200) {
             try {
+                if (store.challengeId) {
+                    user.value.challengeId = store.challengeId;
+                }
                 const response = await userService.login(user.value)
                 if (response.status == 200) {
                     router.push({name: 'home'});
@@ -71,6 +77,8 @@ async function register(){
                     localStorage.setItem('loggedIn', 'true');
                     localStorage.setItem('user', JSON.stringify(response.data));
                     store.loggedIn = true
+                    store.challengeId = null
+                    delete user.value.challengeId;
                 }       
             } catch(error) {
                 errorMessage.value = "Ein Fehler ist aufgetreten! Bitte versuche es später erneut."

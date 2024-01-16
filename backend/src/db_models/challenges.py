@@ -6,12 +6,12 @@ from sqlmodel import SQLModel, Field, Relationship
 from src.db_models.hashtag_challenge import HashtagChallengeTable
 
 
-
 class ChallengeStatus(Enum):
     DONE = "done"
     PENDING = "pending"
     DECLINED = "declined"
     ACCEPTED = "accepted"
+    ASLINK = "aslink"
 
 
 class ChallengeTable(SQLModel, table=True):
@@ -19,7 +19,7 @@ class ChallengeTable(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     sender_user_id: int
-    receiver_user_id: int
+    receiver_user_id: Optional[int]
     title: str
     description: str
     reward: Optional[str]
@@ -28,4 +28,6 @@ class ChallengeTable(SQLModel, table=True):
     done_date: Optional[datetime] = Field()
     status: ChallengeStatus
 
-    hashtags: Optional[List["HashtagTable"]] = Relationship(back_populates="challenges", link_model=HashtagChallengeTable)
+    hashtags: Optional[List["HashtagTable"]] = Relationship(
+        back_populates="challenges", link_model=HashtagChallengeTable
+    )

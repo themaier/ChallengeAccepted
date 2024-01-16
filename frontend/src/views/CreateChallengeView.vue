@@ -12,16 +12,6 @@
                 </div>
             </div>
             <div class="mb-3">
-              <label class="form-label" for="friend">Freund auswählen *</label>	
-                <select id="friend" class="form-select" required v-model="challenge.friend_id" aria-label="Default select example">
-                  <option disabled value="">Wähle einen Freund aus</option>
-                  <option v-for="friend in friends" :key="friend.user_id" :value="friend.user_id">{{ friend.username }}</option>
-                </select>
-                <div class="invalid-feedback">
-                  Freund muss ausgewählt sein.
-                </div>
-            </div>
-            <div class="mb-3">
                 <label for="description">Beschreibung *</label>
                 <input type="text" class="form-control" required id="description" v-model="challenge.description">
                 <div class="invalid-feedback">
@@ -49,7 +39,19 @@
               <input type="checkbox" id="chatgpt_check" class="form-check-input" v-model="challenge.email_check">
               <label for="checkbox" class="form-check-label">Email an Freund senden</label>
             </div>
-            <button type="submit" class="btn btn-primary" style="text-align: center">Freund herausfordern</button>
+            <div class="mb-3">
+              <label class="form-label" for="friend">Freund auswählen</label>	
+                <select id="friend" class="form-select" v-model="challenge.friend_id" aria-label="Default select example">
+                  <option value="">Wähle einen Freund aus</option>
+                  <option v-for="friend in friends" :key="friend.user_id" :value="friend.user_id">{{ friend.username }}</option>
+                </select>
+                <div class="invalid-feedback">
+                  Freund muss ausgewählt sein.
+                </div>
+            </div>
+            <br>
+            <button v-if=challenge.friend_id type="submit" class="btn btn-primary" style="text-align: center">Freund herausfordern</button>
+            <button v-if=!challenge.friend_id type="submit" class="btn btn-primary" style="text-align: center" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Challenge-Link erstellen</button>
             <div v-if="errorMessage != ''" class="mt-2 text-danger">{{errorMessage}}</div>
             <div v-if="successMessage != ''" class="mt-2 text-success">{{successMessage}}</div>
             <div v-if="challenge.chatgpt_check">
@@ -60,12 +62,29 @@
         </form>
     </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Challenge Link</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        http://18.196.97.249:3000/registrieren?challengeId={{challengeId}}
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="copyTextToClipboard()">Kopieren</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="paypal-button-container"></div>
 </main>
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {computed, ref} from 'vue'
 import challengeService from "../services/challenge.service.js";
 import friendshipService from "../services/friendship.service.js";
 import {useStore} from '../stores/store'
@@ -74,6 +93,7 @@ import CheckoutItem from '../components/CheckoutItem.vue'
 const errorMessage = ref('')
 const successMessage = ref('')
 const needsValidation = ref(false)
+const challengeId = ref('')
 const store = useStore()
 const challenge = ref({
     user_id: store.user.id,
@@ -84,30 +104,30 @@ const challenge = ref({
     reward: null,
     chatgpt_check: false,
     email_check: false,
+    overlay: false,
   });
 
 const friends = ref('')
 
-function resetChallenge() {
-  challenge.value = {
-    user_id: store.user.id,
-    challenge_name: '',
-    friend_id: null,
-    description: '',
-    hashtags_list: null,
-    reward: null,
-    chatgpt_check: false,
-    email_check: false,
-  };
+const getCreatedChallenges = async () => {
+  try {
+    const res = await challengeService.getCreatedChallenges(store.user.id)
+    if (res.status == 200) {
+      createdChallenges.value = res.data
+    }
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const createChallenge = async () => {
   try {
     needsValidation.value = true
 
-    if(!challenge.value.challenge_name || challenge.value.friend_id == null || !challenge.value.description){
+    if(!challenge.value.challenge_name || !challenge.value.description){
       return
     }
+    if (challenge.value.friend_id === '') challenge.value.friend_id = null
     if (challenge.value.hashtags_list === '') challenge.value.hashtags_list = null
     if (challenge.value.reward === '') challenge.value.reward = null
     if (challenge.value.hashtags_list)	{
@@ -115,6 +135,7 @@ const createChallenge = async () => {
     }
     const res = await challengeService.createChallenge(challenge.value)
     if (res.status == 200) {
+      challengeId.value = res.data
       needsValidation.value = false
       errorMessage.value = ''
       successMessage.value = "Challenge wurde erfolgreich erstellt."
@@ -153,6 +174,13 @@ const getFriends = async () => {
         alert("Error running rest-call:", error.message);
     }
   }
+}
+
+const copyTextToClipboard = () => {
+  navigator.clipboard.writeText('http://18.196.97.249:3000/registrieren?challengeId=' + challengeId.value).then(function() {
+  }).catch(function(err) {
+    console.error('Error in copying link: ', err);
+  });
 }
 
 getFriends()
