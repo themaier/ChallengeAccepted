@@ -28,11 +28,6 @@ const router = createRouter({
       name: 'signUp',
       component: SignUpView,
     },
-    // {
-    //   path: '/registrieren/:challengeId',
-    //   name: 'signUp',
-    //   component: SignUpView,
-    // },
     {
       path: '/erstellen',
       name: 'create', 

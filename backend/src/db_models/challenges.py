@@ -19,7 +19,7 @@ class ChallengeTable(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     sender_user_id: int
-    receiver_user_id: Optional[int]
+    receiver_user_id: Optional[int] = None
     title: str
     description: str
     reward: Optional[str]

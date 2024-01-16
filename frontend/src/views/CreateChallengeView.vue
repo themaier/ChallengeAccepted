@@ -109,17 +109,6 @@ const challenge = ref({
 
 const friends = ref('')
 
-const getCreatedChallenges = async () => {
-  try {
-    const res = await challengeService.getCreatedChallenges(store.user.id)
-    if (res.status == 200) {
-      createdChallenges.value = res.data
-    }
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 const createChallenge = async () => {
   try {
     needsValidation.value = true
