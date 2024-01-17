@@ -5,9 +5,7 @@ from sqlalchemy import desc, or_
 from sqlmodel import Session, select
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks, Form
 from src.db_models.likes import LikesTable
-from src.utils.error import raise_404
 from src.db_models.challenges import ChallengeTable, ChallengeStatus, ChallengeStatus
-from src.db_models.hashtag_challenge import HashtagChallengeTable
 from src.db_models.text_reaction import TextReactionTable
 from src.db_models.users import UserTable
 from src.api_models.challenge_accepted import *
@@ -214,7 +212,7 @@ async def get_done_challenges(
 
 @router.get("/challenges/{userId}/accepted")
 async def get_accepted_challenges(
-    userId: int, db: Session = Depends(get_db)
+    userId: str, db: Session = Depends(get_db)
 ) -> List[Challenge]:
     challenges_entries = db.exec(
         select(ChallengeTable).where(

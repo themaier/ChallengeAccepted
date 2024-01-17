@@ -1,6 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, Query, HTTPException, Response, status
-from src.utils.error import raise_404
+from fastapi import APIRouter, Depends, HTTPException, status
 from src.db_models.users import UserTable
 from src.db_models.challenges import ChallengeTable, ChallengeStatus
 from src.api_models.users import UserVerify
@@ -56,14 +55,24 @@ async def verify_login(
             detail="Invalid username or password",
         )
 
+    # Attention: the db.commit() for the following existingChallinge clears the existingUser object
+    # Therefor we need a copy of the object.
+    existing_user_copy = UserTable(
+        id=existingUser.id,
+        username=existingUser.username,
+        password=existingUser.password,
+        email=existingUser.email,
+    )
+
     if user.challengeId:
         existingChallenge = db.exec(
             select(ChallengeTable).where(ChallengeTable.id == user.challengeId)
         ).first()
         if existingChallenge and existingChallenge.status is ChallengeStatus.ASLINK:
-            if existingChallenge.sender_user_id != existingUser.id:
+            if existingChallenge.sender_user_id != existing_user_copy.id:
                 existingChallenge.status = ChallengeStatus.PENDING
-                existingChallenge.receiver_user_id = existingUser.id
+                existingChallenge.receiver_user_id = existing_user_copy.id
                 db.add(existingChallenge)
                 db.commit()
-    return existingUser
+
+    return existing_user_copy

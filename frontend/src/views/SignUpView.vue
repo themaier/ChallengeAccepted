@@ -51,7 +51,7 @@ function isEmailValid(email) {
 }
 const store = useStore()
 const route = useRoute()
-store.challengeId = computed(() => route.query.challengeId).value
+store.challengeId = route.query.challengeId
 async function register(){
     needsValidation.value = true
     if (!user.value.username || !user.value.email || !user.value.password) {
