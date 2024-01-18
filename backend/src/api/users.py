@@ -49,7 +49,7 @@ async def verify_login(
     existingUser = db.exec(
         select(UserTable).where(UserTable.username == user.username)
     ).first()
-    if existingUser is None or user.password != user.password:
+    if existingUser is None or existingUser.password != user.password:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password",

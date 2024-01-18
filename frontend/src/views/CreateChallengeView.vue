@@ -13,7 +13,7 @@
             </div>
             <div class="mb-3">
                 <label for="description">Beschreibung *</label>
-                <input type="text" class="form-control" required id="description" v-model="challenge.description">
+                <input type="text" class="form-control" required id="description" v-model="challenge.description" placeholder="z.B. Wie macht der Bär?" >
                 <div class="invalid-feedback">
                   Challenge Beschreibung muss befüllt sein.
                 </div>
@@ -21,7 +21,7 @@
 
             <div class="mb-3">
                 <label for="hashtags">Hashtag (optional)</label>
-                <input type="text" class="form-control" id="hashtags" v-model="challenge.hashtags_list" aria-describedby="hashtagHelp">
+                <input type="text" class="form-control" id="hashtags" v-model="challenge.hashtags_list" aria-describedby="hashtagHelp" placeholder="z.B. WebEngineering">
                 <div id="hashtagHelp" class="form-text">
                   Hashtags müssen mit Komma getrennt werden und dürfen keine Leerzeichen sowie # enthalten.
                 </div>
@@ -172,7 +172,7 @@ const getFriends = async () => {
 
 const copyTextToClipboard = () => {
   navigator.clipboard.writeText(`http://${ipv4}:3000/registrieren?challengeId=${challengeId.value}`).then(function() {
-  }).catch(function(err) {
+  }).catch(err => {
     console.error('Error in copying link: ', err);
   });
 }
