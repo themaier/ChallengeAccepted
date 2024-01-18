@@ -114,7 +114,7 @@ const getPendingChallenges = async () => {
     const res = await challengeService.getPendingChallenges(store.user.id)
     if (res.status == 200) {
       pendingChallenges.value = res.data
-            console.log(pendingChallenges.value)
+      console.log(pendingChallenges.value)
     }
   } catch (error) {
     console.log(error)

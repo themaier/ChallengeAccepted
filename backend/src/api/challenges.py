@@ -5,9 +5,7 @@ from sqlalchemy import desc, or_
 from sqlmodel import Session, select
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks, Form
 from src.db_models.likes import LikesTable
-from src.utils.error import raise_404
 from src.db_models.challenges import ChallengeTable, ChallengeStatus, ChallengeStatus
-from src.db_models.hashtag_challenge import HashtagChallengeTable
 from src.db_models.text_reaction import TextReactionTable
 from src.db_models.users import UserTable
 from src.api_models.challenge_accepted import *
@@ -23,11 +21,11 @@ ALLOWED_EXTENSIONS = ["mp4", "png", "jpeg", "jpg"]
 
 
 @router.post("/challenges")
-async def add_challenge(
+async def create_challenge(
     challenge: ChallengeForm,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
-):
+) -> int:
     challenges_per_user = db.exec(
         select(ChallengeTable).where(
             ChallengeTable.receiver_user_id == challenge.friend_id
@@ -64,6 +62,11 @@ async def add_challenge(
         )
         send_email_background(background_tasks=background_tasks, email_data=email_data)
 
+    if challenge.friend_id == None:
+        create_status = ChallengeStatus.ASLINK
+    else:
+        create_status = ChallengeStatus.PENDING
+
     list_hashtags = []
     if challenge.hashtags_list:
         hashtags = challenge.hashtags_list.split(",")
@@ -87,14 +90,13 @@ async def add_challenge(
         reward=challenge.reward,
         challenge_resources="/",
         prove_resource="",
-        status=ChallengeStatus.PENDING,
+        status=create_status,
         hashtags=list_hashtags,
     )
-
     db.add(challenge_entry)
     db.commit()
-
-    return
+    db.refresh(challenge_entry)
+    return challenge_entry.id
 
 
 @router.get("/challenges")
@@ -210,7 +212,7 @@ async def get_done_challenges(
 
 @router.get("/challenges/{userId}/accepted")
 async def get_accepted_challenges(
-    userId: int, db: Session = Depends(get_db)
+    userId: str, db: Session = Depends(get_db)
 ) -> List[Challenge]:
     challenges_entries = db.exec(
         select(ChallengeTable).where(
@@ -351,10 +353,12 @@ async def get_challenges_by_hashtag(
     hashtag_entry = db.exec(
         select(HashtagTable).where(HashtagTable.text == hashtag)
     ).first()
-    done_challenges = [challenge for challenge in hashtag_entry.challenges if challenge.status == ChallengeStatus.DONE]
-    sorted_entries = sorted(
-        done_challenges, key=lambda x: x.done_date, reverse=True
-    )
+    done_challenges = [
+        challenge
+        for challenge in hashtag_entry.challenges
+        if challenge.status == ChallengeStatus.DONE
+    ]
+    sorted_entries = sorted(done_challenges, key=lambda x: x.done_date, reverse=True)
     challenges = map_challenge_list(userId, sorted_entries, db)
     return challenges
 

@@ -43,6 +43,9 @@ async function login(){
         return
     }
     try {
+        if (store.challengeId) {
+            user.value.challengeId = store.challengeId;
+        }
         const response = await userService.login(user.value)
         
         if (response.status == 200) {
@@ -51,6 +54,8 @@ async function login(){
             localStorage.setItem('loggedIn', 'true');
             localStorage.setItem('user', JSON.stringify(response.data));
             store.loggedIn = true
+            store.challengeId = null
+            delete user.value.challengeId;
         }       
     } catch(error) {
         if(error.response.status == 401){

@@ -44,7 +44,7 @@ class LikeChallengeRequest(BaseModel):
 class ChallengeForm(BaseModel):
     user_id: int
     challenge_name: str
-    friend_id: int
+    friend_id: Optional[int] = Field(default=None)
     description: str
     hashtags_list: Optional[str]
     reward: Optional[str]
