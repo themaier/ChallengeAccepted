@@ -50,8 +50,10 @@
                 </div>
             </div>
             <br>
-            <button v-if=challenge.friend_id type="submit" class="btn btn-primary" style="text-align: center">Freund herausfordern</button>
-            <button v-if=!challenge.friend_id type="submit" class="btn btn-primary" style="text-align: center" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Challenge-Link erstellen</button>
+            <button type="submit" class="btn btn-primary" style="text-align: center">
+              {{ challenge.friend_id ? 'Freund herausfordern' : 'Challenge-Link erstellen' }}
+            </button>
+            <button id="invisibleOpenModalButton" style="visibility: hidden;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button>
             <div v-if="errorMessage != ''" class="mt-2 text-danger">{{errorMessage}}</div>
             <div v-if="successMessage != ''" class="mt-2 text-success">{{successMessage}}</div>
             <div v-if="challenge.chatgpt_check">
@@ -84,10 +86,10 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue'
+import { ref } from 'vue'
 import challengeService from "../services/challenge.service.js";
 import friendshipService from "../services/friendship.service.js";
-import {useStore} from '../stores/store'
+import { useStore } from '../stores/store'
 import CheckoutPayment from '../components/CheckoutPayment.vue'
 import CheckoutItem from '../components/CheckoutItem.vue'
 const ipv4 = import.meta.env.VITE_IPV4 || 'localhost';
@@ -139,6 +141,7 @@ const createChallenge = async () => {
         chatgpt_check: false,
         email_check: false,
       };
+      document.getElementById('invisibleOpenModalButton').click();
     }
   } catch (error) { 
     successMessage.value = ''
