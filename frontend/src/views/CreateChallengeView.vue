@@ -127,6 +127,7 @@ const createChallenge = async () => {
     }
     const res = await challengeService.createChallenge(challenge.value)
     if (res.status == 200) {
+      if (!challenge.value.friend_id) document.getElementById('invisibleOpenModalButton').click();
       challengeId.value = res.data
       needsValidation.value = false
       errorMessage.value = ''
@@ -141,7 +142,7 @@ const createChallenge = async () => {
         chatgpt_check: false,
         email_check: false,
       };
-      document.getElementById('invisibleOpenModalButton').click();
+      
     }
   } catch (error) { 
     successMessage.value = ''
