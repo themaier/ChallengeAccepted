@@ -5,11 +5,22 @@
 Getting started:
 
 1. Install:
+   - Docker
 
-   - VSCode
-   - WSL2
-   - DockerDesktop
-   - create .env in backend-folder !!!!!!!!!!!!!!!
+2. Preperation
+   - create `.env` fine in the backend-folder!
+      - fill in values:
+         POSTGRES_DB_NAME=
+         POSTGRES_PASSWORD=
+         POSTGRES_PORT=
+         POSTGRES_USERNAME=
+         OPENAI_API_KEY=
+         MAIL_USERNAME=
+         MAIL_PASSWORD=
+         MAIL_FROM=
+         MAIL_PORT=
+         MAIL_SERVER=
+         MAIL_FROM_NAME= 
 
 2. In Terminal in Challenge-Accepted root directory
    - docker-compose build
@@ -40,6 +51,8 @@ For more help with the docker commands, have a look at our HELP.md
 - Also every time something is merge into main, it gets deployed automatically
   through a gitub actions script that copies over the contend and user docker-compose up
   to start the services.
+- For deployment another .env file is needed in the frontend folder.
+   - VITE_API_URL=    
 
 ## Start Challenge-Accepted without docker-compose (optional):
 
