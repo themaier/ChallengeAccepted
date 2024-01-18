@@ -16,15 +16,18 @@ Getting started:
    - docker-compose up
 
 Backend (Swagger) now runs on:
-http://localhost:8000/docs
+
+- http://localhost:8000/docs
 
 Frontend now runs on:
-http://localhost:3000/
+
+- http://localhost:3000/
 
 Database Connection if needed:
-http://localhost:5050/
-email: challenge-accepted@gmail.com
-pw: password
+
+- http://localhost:5050/
+- database: db_service
+- pw: password
 
 Strg + C/docker-compose down to stop
 
@@ -32,8 +35,11 @@ For more help with the docker commands, have a look at our HELP.md
 
 ## Deployed Release
 
-There is also a deployed version of the Challenge-Accepted.
-You can find it under: http://18.196.97.249:3000
+- There is also a deployed version of the Challenge-Accepted.
+- You can find it under: http://18.196.97.249:3000
+- Also every time something is merge into main, it gets deployed automatically
+  through a gitub actions script that copies over the contend and user docker-compose up
+  to start the services.
 
 ## Start Challenge-Accepted without docker-compose (optional):
 
