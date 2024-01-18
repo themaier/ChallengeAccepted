@@ -33,18 +33,21 @@ For more help with the docker commands, have a look at our HELP.md
 ## Deployed Release
 
 There is also a deployed version of the Challenge-Accepted.
-You can find it under: http://3.78.244.229:3000/#/login
+You can find it under: http://18.196.97.249:3000
 
 ## Start Challenge-Accepted without docker-compose (optional):
 
 cd backend
-uvicorn src.main:app
-http://127.0.0.1:8000/docs
+
+- uvicorn src.main:app
+- http://127.0.0.1:8000/docs
 
 frontend:
-cd frontend
-npm install
-npm run dev
+
+- cd frontend
+- npm install
+- npm run dev
+- http://127.0.0.1:3000
 
 ### install dev software backend:
 
@@ -53,5 +56,7 @@ Open pgadmin -> create db with name challenge-accepted
 host name/address = db_service
 Put your password and username into backend/src/db/local.env !
 
-access AWS:
-ssh -i Challenge-Accepted.pem ubuntu@ec2-18-196-97-249.eu-central-1.compute.amazonaws.com
+## Access AWS EC2 instance:
+
+- ssh -i Challenge-Accepted.pem ubuntu@ec2-18-196-97-249.eu-central-1.compute.amazonaws.com
+- Challenge-Accepted.pem is needed
